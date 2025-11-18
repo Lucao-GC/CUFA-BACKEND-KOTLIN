@@ -24,6 +24,19 @@ class CurriculoController(
         return CurriculoResponseDto(filename)
     }
 
+    @GetMapping
+    fun getCurriculoUsuario(): CurriculoResponseDto {
+        val usuario = usuarioService.mostrarDados()
+        val url = usuario.curriculoUrl
+
+        if (url.isNullOrBlank()) {
+            return CurriculoResponseDto("")
+        }
+
+        val nomeArquivo = url.substringAfterLast("/")
+        return CurriculoResponseDto(nomeArquivo)
+    }
+
     @GetMapping("/download/{filename:.+}",
         produces = [MediaType.APPLICATION_OCTET_STREAM_VALUE]
     )

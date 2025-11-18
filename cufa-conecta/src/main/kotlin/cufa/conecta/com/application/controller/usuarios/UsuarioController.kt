@@ -36,7 +36,6 @@ class UsuarioController(
 
         val cookie = Cookie("jwt", usuarioToken.tokenJwt)
         cookie.isHttpOnly = true
-//        cookie.secure = true
         cookie.path = "/"
         cookie.maxAge = 60 * 60 * 24 * 7
 
@@ -54,7 +53,6 @@ class UsuarioController(
     fun logout(response: HttpServletResponse) {
         val cookie = Cookie("jwt", null)
         cookie.isHttpOnly = true
-//        cookie.secure = true
         cookie.path = "/"
         cookie.maxAge = 0
 
