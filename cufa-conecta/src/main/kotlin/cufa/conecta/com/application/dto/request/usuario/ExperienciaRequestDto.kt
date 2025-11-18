@@ -2,6 +2,7 @@ package cufa.conecta.com.application.dto.request.usuario
 
 import cufa.conecta.com.model.data.Experiencia
 import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
 import java.time.LocalDate
 
 data class ExperienciaRequestDto(
@@ -9,9 +10,9 @@ data class ExperienciaRequestDto(
     val cargo: String,
     @field:NotBlank(message = "O campo empresa não pode ser nulo, vazio ou branco")
     val empresa: String,
-    @field:NotBlank(message = "O campo dtInicio não pode ser nulo, vazio ou branco")
+    @field:NotNull(message = "O campo dtInicio não pode ser nulo")
     val dtInicio: LocalDate,
-    @field:NotBlank(message = "O campo dtFim não pode ser nulo, vazio ou branco")
+    @field:NotNull(message = "O campo dtFim não pode ser nulo")
     val dtFim: LocalDate
 ) {
     fun toModel() = Experiencia(

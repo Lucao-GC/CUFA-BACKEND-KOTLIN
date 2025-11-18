@@ -89,7 +89,7 @@ class UsuarioRepositoryImpl(
 
         val novoUsuario = UsuarioEntity(
             id = usuarioExistente.id,
-            nome = usuarioExistente.nome,
+            nome = data.nome ?: usuarioExistente.nome,
             email = usuarioExistente.email,
             senha = usuarioExistente.senha,
             cpf = data.cpf,

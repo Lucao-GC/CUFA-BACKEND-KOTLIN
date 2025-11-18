@@ -39,7 +39,6 @@ class EmpresaController(
 
         val cookie = Cookie("jwt", empresaToken.tokenJwt)
         cookie.isHttpOnly = true
-//        cookie.secure = true
         cookie.path = "/"
         cookie.maxAge = 60 * 60 * 24 * 7
 
