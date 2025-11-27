@@ -1,0 +1,78 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  packages: write
+  id-token: write
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Ensure Gradle wrapper is executable
+        run: chmod +x ./cufa-conecta/gradlew
+
+      - name: Build (compile + test)
+        run: |
+          cd cufa-conecta
+          ./gradlew clean build --no-daemon
+
+      - name: Upload build artifact (jar)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cufa-conecta-jar
+          path: cufa-conecta/build/libs/*.jar
+
+  publish:
+    name: Publish (CD)
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for Dockerfile
+        id: check
+        run: |
+          if [ -f cufa-conecta/Dockerfile ]; then echo "exists=true" >> $GITHUB_OUTPUT; else echo "exists=false" >> $GITHUB_OUTPUT; fi
+
+      - name: Login to GitHub Container Registry
+        if: steps.check.outputs.exists == 'true'
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push Docker image (GHCR)
+        if: steps.check.outputs.exists == 'true'
+        uses: docker/build-push-action@v5
+        with:
+          context: ./cufa-conecta
+          file: ./cufa-conecta/Dockerfile
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/cufa-conecta:latest,ghcr.io/${{ github.repository_owner }}/cufa-conecta:${{ github.sha }}
+
+      - name: Upload release artifact (jar)
+        uses: actions/upload-artifact@v4
+        with:
+          name: cufa-conecta-jar-release
+          path: cufa-conecta/build/libs/*.jar
