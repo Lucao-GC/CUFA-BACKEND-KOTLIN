@@ -8,9 +8,9 @@ data class PublicacaoEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_publicacao")
-    val idPublicacao: Long ?= null,
+    val publicacaoId: Long ?= null,
 
-    @Column(name = "fk_empresa")
+    @Column(name = "id_empresa")
     val empresaId: Long? = null,
     val titulo: String,
     val descricao: String,

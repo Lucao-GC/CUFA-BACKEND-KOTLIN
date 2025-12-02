@@ -28,12 +28,12 @@ interface PublicacaoDao : JpaRepository<PublicacaoEntity, Long> {
     @Modifying
     @Query(
         value = """
-            DELETE FROM publicacao p
-            WHERE p.idPublicacao = :idPublicacao
-            AND p.empresaId = :idEmpresa
-        """
+        DELETE FROM publicacao p
+        WHERE p.publicacaoId = :publicacaoId
+        AND p.empresaId = :idEmpresa
+    """
     )
-    fun deletePublicacao(idPublicacao: Long, idEmpresa: Long)
+    fun deletePublicacao(publicacaoId: Long, idEmpresa: Long)
 
     @Modifying
     @Transactional
@@ -45,12 +45,12 @@ interface PublicacaoDao : JpaRepository<PublicacaoEntity, Long> {
         p.tipoContrato = :tipoContrato,
         p.dtExpiracao = :dtExpiracao
     WHERE 
-        p.idPublicacao = :idPublicacao
+        p.publicacaoId = :publicacaoId
     AND 
         p.empresaId = :empresaId
 """)
     fun atualizarPublicacao(
-        idPublicacao: Long,
+        publicacaoId: Long,
         empresaId: Long,
         titulo: String,
         descricao: String,

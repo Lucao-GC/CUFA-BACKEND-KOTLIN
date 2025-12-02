@@ -2,7 +2,6 @@ package cufa.conecta.com.application.controller.empresas
 
 import cufa.conecta.com.application.dto.request.empresa.FuncionarioRequestDto
 import cufa.conecta.com.application.dto.response.empresa.FuncionarioResponseDto
-import cufa.conecta.com.application.exception.FuncionarioNotExistsException
 import cufa.conecta.com.domain.service.empresa.FuncionarioService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -26,8 +25,7 @@ class FuncionarioController(
     fun listarPorEmpresa(): List<FuncionarioResponseDto> {
         val funcionariosEncontrados = service.buscarFuncionarios()
 
-        if (funcionariosEncontrados.isEmpty())
-            throw FuncionarioNotExistsException("Não há nenhum funcionario cadastrado!!")
+        if (funcionariosEncontrados.isEmpty()) return emptyList()
 
         val result = FuncionarioResponseDto.listOf(funcionariosEncontrados)
 

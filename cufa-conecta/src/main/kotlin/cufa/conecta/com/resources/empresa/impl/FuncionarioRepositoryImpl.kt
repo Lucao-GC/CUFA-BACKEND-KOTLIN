@@ -27,7 +27,7 @@ class FuncionarioRepositoryImpl(
         val senhaCriptografada = passwordEncoder.encode(data.senha)
 
         val funcionario = FuncionarioEntity(
-            fkEmpresa = empresa.idEmpresa!!,
+            empresaId = empresa.idEmpresa!!,
             nome = data.nome,
             email = data.email,
             senha = senhaCriptografada,
@@ -55,7 +55,7 @@ class FuncionarioRepositoryImpl(
         val funcionarioEntity = buscarFuncionarioPorId(id)
 
         val funcionario = Funcionario(
-            empresaId = funcionarioEntity.fkEmpresa,
+            empresaId = funcionarioEntity.empresaId,
             nome = funcionarioEntity.nome,
             email = funcionarioEntity.email,
             senha = funcionarioEntity.senha,
@@ -82,6 +82,7 @@ class FuncionarioRepositoryImpl(
     private final fun mapearFuncionarios(funcionariosEntity: List<FuncionarioEntity>): List<Funcionario> {
         return funcionariosEntity.map { funcionarioEntity ->
             Funcionario(
+                id = funcionarioEntity.funcionarioId,
                 nome = funcionarioEntity.nome,
                 email = funcionarioEntity.email,
                 cargo = funcionarioEntity.cargo,

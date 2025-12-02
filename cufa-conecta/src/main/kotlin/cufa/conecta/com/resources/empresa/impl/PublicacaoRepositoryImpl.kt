@@ -72,6 +72,7 @@ class PublicacaoRepositoryImpl(
         val nomeEmpresa = empresaDao.findNameByEmpresaId(entity.empresaId!!)
 
         val publicacao = Publicacao(
+            publicacaoId = entity.publicacaoId,
             empresaId = entity.empresaId,
             nomeEmpresa = nomeEmpresa,
             titulo = entity.titulo,
@@ -91,7 +92,7 @@ class PublicacaoRepositoryImpl(
 
         runCatching {
             dao.deletePublicacao(
-            publicacao.idPublicacao!!,
+            publicacao.publicacaoId!!,
             empresa.idEmpresa!!
             )
         }.getOrElse {
@@ -105,7 +106,7 @@ class PublicacaoRepositoryImpl(
         val publicacaoAntiga = buscarPublicacaoPorId(data.publicacaoId!!)
 
         val publicacaoEditada = PublicacaoEntity(
-            idPublicacao = publicacaoAntiga.idPublicacao,
+            publicacaoId = publicacaoAntiga.publicacaoId,
             titulo = data.titulo ?: publicacaoAntiga.titulo,
             descricao = data.descricao ?: publicacaoAntiga.descricao,
             tipoContrato = data.tipoContrato ?: publicacaoAntiga.tipoContrato,
@@ -114,7 +115,7 @@ class PublicacaoRepositoryImpl(
 
         runCatching {
             dao.atualizarPublicacao(
-                publicacaoEditada.idPublicacao!!,
+                publicacaoEditada.publicacaoId!!,
                 empresa.idEmpresa!!,
                 publicacaoEditada.titulo,
                 publicacaoEditada.descricao,
@@ -131,6 +132,7 @@ class PublicacaoRepositoryImpl(
             val nomeEmpresa = empresaDao.findNameByEmpresaId(entity.empresaId!!)
 
             Publicacao(
+                publicacaoId = entity.publicacaoId,
                 empresaId = entity.empresaId,
                 nomeEmpresa = nomeEmpresa,
                 titulo = entity.titulo,

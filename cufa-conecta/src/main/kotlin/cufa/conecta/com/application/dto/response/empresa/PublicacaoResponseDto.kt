@@ -4,6 +4,7 @@ import cufa.conecta.com.model.data.Publicacao
 import java.time.LocalDateTime
 
 data class PublicacaoResponseDto(
+    val publicacaoId: Long,
     val titulo: String,
     val descricao: String,
     val tipoContrato: String,
@@ -15,6 +16,7 @@ data class PublicacaoResponseDto(
         fun listOf(listaDePublicacoes: List<Publicacao>): List<PublicacaoResponseDto> {
             return listaDePublicacoes.map { data ->
                 PublicacaoResponseDto(
+                    publicacaoId = data.publicacaoId!!,
                     nomeEmpresa = data.nomeEmpresa!!,
                     titulo = data.titulo!!,
                     descricao = data.descricao!!,

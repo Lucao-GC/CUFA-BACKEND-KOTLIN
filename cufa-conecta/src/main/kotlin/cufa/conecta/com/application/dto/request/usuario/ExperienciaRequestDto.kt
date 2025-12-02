@@ -13,7 +13,7 @@ data class ExperienciaRequestDto(
     @field:NotNull(message = "O campo dtInicio não pode ser nulo")
     val dtInicio: LocalDate,
     @field:NotNull(message = "O campo dtFim não pode ser nulo")
-    val dtFim: LocalDate
+    val dtFim: LocalDate? = null
 ) {
     fun toModel() = Experiencia(
         cargo = cargo,

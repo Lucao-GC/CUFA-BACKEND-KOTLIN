@@ -17,15 +17,19 @@ interface UsuarioDao : JpaRepository<UsuarioEntity, Long> {
 
     @Query(
         """
-            SELECT * FROM cadastro_usuario
-            WHERE id_usuario IN (
-              SELECT id_usuario from candidatura
-              WHERE fk_publicacao = :publicacaoId
-              )
-            LIMIT :size
-            OFFSET :offset
-        """,
+        SELECT * 
+        FROM cadastro_usuario u
+        WHERE u.id_usuario IN (
+            SELECT c.id_usuario
+            FROM candidatura c
+            WHERE c.id_publicacao = :publicacaoId
+            AND c.id_empresa = :empresaId
+        )
+        ORDER BY u.id_usuario
+        LIMIT :size
+        OFFSET :offset
+    """,
         nativeQuery = true
     )
-    fun dadosPaginados(publicacaoId: Long, offset: Int, size: Int, usuarioId: Long): List<UsuarioEntity>
+    fun dadosPaginados(publicacaoId: Long, empresaId: Long, size: Int, offset: Int): List<UsuarioEntity>
 }
