@@ -4,8 +4,10 @@ import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
 import cufa.conecta.com.model.data.Login
 import cufa.conecta.com.model.data.Usuario
 import cufa.conecta.com.model.data.result.UsuarioResult
+import cufa.conecta.com.resources.usuario.entity.UsuarioEntity
 
 interface UsuarioRepository {
+    fun obterUsuarioPorEmail(email: String): UsuarioEntity
     fun cadastrarUsuario(data: Usuario)
     fun autenticar(data: Login): UsuarioTokenDto
     fun mostrarDados(email: String): UsuarioResult
