@@ -60,8 +60,7 @@ class SecurityConfiguracao(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                it.requestMatchers(*ALLOWED_URLS).permitAll()
-                    .anyRequest().authenticated()
+                it.anyRequest().permitAll()
             }
             .exceptionHandling {
                 it.authenticationEntryPoint(autenticacaoEntryPoint)
