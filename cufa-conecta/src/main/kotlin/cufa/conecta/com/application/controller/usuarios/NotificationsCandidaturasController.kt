@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/api/notifications-candidaturas")
+@RequestMapping("/notifications-candidaturas")
 class NotificationsCandidaturasController(
     private val rabbitTemplate: RabbitTemplate
 ) {

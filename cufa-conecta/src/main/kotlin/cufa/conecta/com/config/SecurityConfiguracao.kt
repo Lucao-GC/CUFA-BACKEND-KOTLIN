@@ -34,21 +34,21 @@ class SecurityConfiguracao(
                 AntPathRequestMatcher("/swagger-resources/**"),
                 AntPathRequestMatcher("/configuration/ui"),
                 AntPathRequestMatcher("/configuration/security"),
-                AntPathRequestMatcher("/api/public/**"),
+                AntPathRequestMatcher("/public/**"),
                 AntPathRequestMatcher("/webjars/**"),
-                AntPathRequestMatcher("/v3/api-docs/**"),
+                AntPathRequestMatcher("/v3-docs/**"),
                 AntPathRequestMatcher("/actuator/*"),
                 AntPathRequestMatcher("/users/**"),
                 AntPathRequestMatcher("/roles/**"),
                 AntPathRequestMatcher("/error/**"),
                 AntPathRequestMatcher("/actuator/**"),
-                AntPathRequestMatcher("/api/empresas/**"),
-                AntPathRequestMatcher("/api/funcionarios/**"),
-                AntPathRequestMatcher("/api/publicacoes/**"),
-                AntPathRequestMatcher("/api/curriculos/**"),
-                AntPathRequestMatcher("/api/candidaturas/**"),
-                AntPathRequestMatcher("/api/experiencias/**"),
-                AntPathRequestMatcher("/api/usuarios/**")
+                AntPathRequestMatcher("/empresas/**"),
+                AntPathRequestMatcher("/funcionarios/**"),
+                AntPathRequestMatcher("/publicacoes/**"),
+                AntPathRequestMatcher("/curriculos/**"),
+                AntPathRequestMatcher("/candidaturas/**"),
+                AntPathRequestMatcher("/experiencias/**"),
+                AntPathRequestMatcher("/usuarios/**")
             )
     }
 

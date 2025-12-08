@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/api/empresas")
+@RequestMapping("/empresas")
 class EmpresaController(
     private val service: EmpresaService
 ) {
@@ -54,7 +54,7 @@ class EmpresaController(
     fun logout(response: HttpServletResponse) {
         val cookie = Cookie("jwt", null)
         cookie.isHttpOnly = true
-//        cookie.secure = true
+        cookie.secure = false
         cookie.path = "/"
         cookie.maxAge = 0
 
