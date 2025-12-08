@@ -27,12 +27,10 @@ class CandidaturaServiceImpl(
         val email = auth?.name!!
 
         val usuario = usuarioRepository.obterUsuarioPorEmail(email)
-            ?: throw RuntimeException("Usuário não encontrado")
 
         val nomeCandidato = usuario.nome
 
         val publicacao = publicacaoRepository.findById(data.publicacaoId)
-            ?: throw RuntimeException("Publicação não encontrada")
 
         val tituloVaga = publicacao.titulo
 

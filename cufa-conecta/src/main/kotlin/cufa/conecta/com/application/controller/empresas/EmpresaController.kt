@@ -34,15 +34,13 @@ class EmpresaController(
         response: HttpServletResponse
     ): EmpresaTokenDto {
         val empresaData = loginDto.toModel()
-
         val empresaToken = service.autenticar(empresaData)
 
-        val cookie = Cookie("jwt", empresaToken.tokenJwt)
-        cookie.isHttpOnly = true
-        cookie.path = "/"
-        cookie.maxAge = 60 * 60 * 24 * 7
+        val token = empresaToken.tokenJwt
 
-        response.addCookie(cookie)
+        val cookie = "jwt=$token; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax"
+
+        response.addHeader("Set-Cookie", cookie)
 
         return EmpresaTokenDto(
             nome = empresaToken.nome,
