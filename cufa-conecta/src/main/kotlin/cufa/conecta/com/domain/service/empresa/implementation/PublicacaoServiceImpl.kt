@@ -6,15 +6,12 @@ import cufa.conecta.com.domain.service.empresa.PublicacaoService
 import cufa.conecta.com.model.data.Publicacao
 import cufa.conecta.com.model.data.result.PublicacaoResult
 import cufa.conecta.com.resources.empresa.PublicacaoRepository
-import cufa.conecta.config.RabbitConfig
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
 class PublicacaoServiceImpl(
-    private val repository: PublicacaoRepository,
-    private val rabbitTemplate: RabbitTemplate
+    private val repository: PublicacaoRepository
 ): PublicacaoService {
     override fun criar(data: Publicacao) {
         val auth = SecurityContextHolder.getContext().authentication
@@ -22,7 +19,7 @@ class PublicacaoServiceImpl(
         val email = auth?.name
 
         repository.criar(data, email!!)
-        rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, data)
+//        rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, data)
     }
 
     override fun buscarTodas(page: Int, size: Int): PublicacaoResult {

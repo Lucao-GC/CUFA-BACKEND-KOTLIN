@@ -52,11 +52,6 @@ dependencies {
     // Rabbit
     implementation("org.springframework.boot:spring-boot-starter-amqp")
 
-    // Cache
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation("org.springframework.boot:spring-boot-starter-cache")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
     // Docker
     runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
 

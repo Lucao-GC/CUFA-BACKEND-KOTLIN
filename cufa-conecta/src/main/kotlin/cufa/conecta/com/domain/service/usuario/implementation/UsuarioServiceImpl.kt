@@ -6,8 +6,6 @@ import cufa.conecta.com.model.data.Login
 import cufa.conecta.com.model.data.Usuario
 import cufa.conecta.com.model.data.result.UsuarioResult
 import cufa.conecta.com.resources.usuario.UsuarioRepository
-import org.springframework.cache.annotation.CacheEvict
-import org.springframework.cache.annotation.Cacheable
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
@@ -19,7 +17,6 @@ class UsuarioServiceImpl(
 
     override fun autenticar(data: Login): UsuarioTokenDto = repository.autenticar(data)
 
-    @Cacheable(value = ["usuario_dados"], key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()")
     override fun mostrarDados(): UsuarioResult {
         val auth = SecurityContextHolder.getContext().authentication
         val email = auth?.name
@@ -28,7 +25,7 @@ class UsuarioServiceImpl(
 
         return dadosUsuario
     }
-    @CacheEvict(value = ["usuario_dados"], key = "T(org.springframework.security.core.context.SecurityContextHolder).getContext().getAuthentication().getName()")
+
     override fun atualizar(data: Usuario) {
         val auth = SecurityContextHolder.getContext().authentication
 

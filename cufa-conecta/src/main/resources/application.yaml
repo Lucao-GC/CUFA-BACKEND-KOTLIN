@@ -2,17 +2,12 @@ server:
   port: 8080
 
 spring:
-  cache:
-    type: redis
   jpa:
     show-sql: false
     hibernate:
       ddl-auto: none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-  redis:
-    host: localhost
-    port: 6379
   datasource:
     url: jdbc:mysql://localhost:3306/cufaconecta
     username: admCufa

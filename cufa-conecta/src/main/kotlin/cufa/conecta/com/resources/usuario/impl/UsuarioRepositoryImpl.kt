@@ -78,10 +78,6 @@ class UsuarioRepositoryImpl(
         )
     }
 
-    override fun obterUsuarioPorEmail(email: String): UsuarioEntity {
-        return buscarUsuarioPorEmail(email)
-    }
-
     override fun mostrarDados(email: String): UsuarioResult {
         val usuarioEntity = buscarUsuarioPorEmail(email)
 
