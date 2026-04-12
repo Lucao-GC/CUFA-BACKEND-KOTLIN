@@ -28,9 +28,12 @@ class ExperienciaController(
         return result
     }
 
-    @PutMapping
-    fun atualizarExperiencia(@RequestBody dto: ExperienciaRequestDto) {
-        val empresaAtualizada = dto.toModel()
+    @PutMapping("/{id}")
+    fun atualizarExperiencia(
+        @PathVariable id: Long,
+        @RequestBody dto: ExperienciaRequestDto
+    ) {
+        val empresaAtualizada = dto.toUpdateModel(id)
 
         service.atualizar(empresaAtualizada)
     }

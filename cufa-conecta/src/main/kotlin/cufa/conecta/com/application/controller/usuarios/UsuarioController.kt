@@ -31,16 +31,13 @@ class UsuarioController(
         response: HttpServletResponse
     ): UsuarioTokenDto {
         val data = dto.toModel()
-
         val usuarioToken = service.autenticar(data)
 
-        val cookie = Cookie("jwt", usuarioToken.tokenJwt)
-        cookie.isHttpOnly = true
-//        cookie.secure = true
-        cookie.path = "/"
-        cookie.maxAge = 60 * 60 * 24 * 7
+        val token = usuarioToken.tokenJwt
 
-        response.addCookie(cookie)
+        val cookie = "jwt=$token; HttpOnly; Path=/; Max-Age=${60 * 60 * 24 * 7}; SameSite=Lax"
+
+        response.addHeader("Set-Cookie", cookie)
 
         return UsuarioTokenDto(
             nome = usuarioToken.nome,
@@ -54,7 +51,6 @@ class UsuarioController(
     fun logout(response: HttpServletResponse) {
         val cookie = Cookie("jwt", null)
         cookie.isHttpOnly = true
-//        cookie.secure = true
         cookie.path = "/"
         cookie.maxAge = 0
 
@@ -70,6 +66,7 @@ class UsuarioController(
 
         return result
     }
+
     @PutMapping
     fun incrementarDadosDoUsuarios(@RequestBody @Valid dto: UsuarioUpdateRequestDto) {
         val usuarioAtualizado = dto.toModel()

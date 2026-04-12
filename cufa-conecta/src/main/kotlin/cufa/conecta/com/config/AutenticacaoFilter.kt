@@ -27,7 +27,7 @@ class AutenticacaoFilter(
             val username = runCatching {
                 jwtTokenManager.getUsernameFromToken(jwtToken)
             }.getOrElse {
-
+                filterChain.doFilter(request, response)
                 return
             }
 

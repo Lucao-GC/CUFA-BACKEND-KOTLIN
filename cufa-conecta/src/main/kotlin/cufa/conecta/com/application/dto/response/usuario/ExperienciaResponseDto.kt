@@ -4,6 +4,7 @@ import cufa.conecta.com.model.data.Experiencia
 import java.time.LocalDate
 
 data class ExperienciaResponseDto (
+    val id : Long,
     val cargo: String,
     val empresa: String,
     val dtInicio: LocalDate,
@@ -13,10 +14,11 @@ data class ExperienciaResponseDto (
         fun listOf(listaDeExperiencias: List<Experiencia>): List<ExperienciaResponseDto> {
             return listaDeExperiencias.map { data ->
                 ExperienciaResponseDto(
+                    id = data.id!!,
                     cargo = data.cargo!!,
                     empresa = data.empresa!!,
                     dtInicio = data.dtInicio!!,
-                    dtFim = data.dtFim!!
+                    dtFim = data.dtFim ?: LocalDate.now(),
                 )
             }
         }

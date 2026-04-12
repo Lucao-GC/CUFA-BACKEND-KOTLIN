@@ -28,10 +28,10 @@ interface ExperienciaDao : JpaRepository<ExperienciaEntity, Long> {
     @Query("""
     UPDATE experiencias e 
     SET 
-        e.cargo = :titulo,
-        e.empresa = :descricao,
-        e.dtInicio = :tipoContrato,
-        e.dtFim = :dtExpiracao
+        e.cargo = :cargo,
+        e.empresa = :empresa,
+        e.dtInicio = :dtInicio,
+        e.dtFim = :dtFim
     WHERE 
         e.id = :idExperiencia
     AND 

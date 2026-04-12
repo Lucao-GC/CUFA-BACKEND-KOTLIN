@@ -148,7 +148,7 @@ class EmpresaRepositoryImpl (
             numero = entity.numero,
             cnpj = entity.cnpj,
             area = entity.area,
-            biografia = entity.biografia!!
+            biografia = entity.biografia
         )
 
         return empresa

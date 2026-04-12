@@ -3,7 +3,6 @@ package cufa.conecta.com.config
 import cufa.conecta.com.resources.AutenticacaoRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -35,9 +34,9 @@ class SecurityConfiguracao(
                 AntPathRequestMatcher("/swagger-resources/**"),
                 AntPathRequestMatcher("/configuration/ui"),
                 AntPathRequestMatcher("/configuration/security"),
-                AntPathRequestMatcher("/api/public/**"),
+                AntPathRequestMatcher("/public/**"),
                 AntPathRequestMatcher("/webjars/**"),
-                AntPathRequestMatcher("/v3/api-docs/**"),
+                AntPathRequestMatcher("/v3-docs/**"),
                 AntPathRequestMatcher("/actuator/*"),
                 AntPathRequestMatcher("/users/**"),
                 AntPathRequestMatcher("/roles/**"),
@@ -60,8 +59,8 @@ class SecurityConfiguracao(
             .cors { }
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers(*ALLOWED_URLS).permitAll()
-                    .anyRequest().authenticated()
+                it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                it.anyRequest().permitAll()
             }
             .exceptionHandling {
                 it.authenticationEntryPoint(autenticacaoEntryPoint)

@@ -78,18 +78,23 @@ class UsuarioRepositoryImpl(
         )
     }
 
+    override fun obterUsuarioPorEmail(email: String): UsuarioEntity {
+        return buscarUsuarioPorEmail(email)
+    }
+
     override fun mostrarDados(email: String): UsuarioResult {
         val usuarioEntity = buscarUsuarioPorEmail(email)
 
         return mapearUsuario(usuarioEntity)
     }
 
+
     override fun atualizar(data: Usuario, email: String) {
         val usuarioExistente = buscarUsuarioPorEmail(email)
 
         val novoUsuario = UsuarioEntity(
             id = usuarioExistente.id,
-            nome = usuarioExistente.nome,
+            nome = data.nome ?: usuarioExistente.nome,
             email = usuarioExistente.email,
             senha = usuarioExistente.senha,
             cpf = data.cpf,
@@ -136,24 +141,25 @@ class UsuarioRepositoryImpl(
 
     private fun mapearUsuario(usuarioEntity: UsuarioEntity): UsuarioResult {
             val dtNascUsuario = usuarioEntity.dtNascimento
-            val idade = definirIdadeDoUsuario(dtNascUsuario!!)
+            val idade = definirIdadeDoUsuario(dtNascUsuario)
 
             val usuario = UsuarioResult(
-                nome = usuarioEntity.nome!!,
+                nome = usuarioEntity.nome,
                 email = usuarioEntity.email!!,
-                cpf = usuarioEntity.cpf!!,
-                telefone = usuarioEntity.telefone!!,
-                escolaridade = usuarioEntity.escolaridade!!,
+                cpf = usuarioEntity.cpf,
+                telefone = usuarioEntity.telefone,
+                escolaridade = usuarioEntity.escolaridade,
                 idade = idade,
-                estadoCivil = usuarioEntity.estadoCivil!!,
-                estado = usuarioEntity.estado!!,
-                cidade = usuarioEntity.cidade!!,
-                biografia = usuarioEntity.biografia!!,
-                curriculoUrl = usuarioEntity.curriculoUrl!!
+                estadoCivil = usuarioEntity.estadoCivil,
+                estado = usuarioEntity.estado,
+                cidade = usuarioEntity.cidade,
+                biografia = usuarioEntity.biografia,
+                curriculoUrl = usuarioEntity.curriculoUrl
             )
 
         return usuario
     }
 
-    private fun definirIdadeDoUsuario(dtNasc: LocalDate) = Period.between(dtNasc, LocalDate.now()).years
+    private fun definirIdadeDoUsuario(dtNasc: LocalDate?) =
+        dtNasc?.let { Period.between(it, LocalDate.now()).years }
 }

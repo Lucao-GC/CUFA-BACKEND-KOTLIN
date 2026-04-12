@@ -42,6 +42,7 @@ class ExperienciaRepositoryImpl(
 
         for (experienciaEntity in listaDeExperienciasEntity) {
             val experiencia = Experiencia(
+                id = experienciaEntity.id!!,
                 cargo = experienciaEntity.cargo,
                 empresa = experienciaEntity.empresa,
                 dtInicio = experienciaEntity.dtInicio,
@@ -66,7 +67,7 @@ class ExperienciaRepositoryImpl(
         )
 
         dao.atualizarExperiencia(
-            novaExperiencia.id!!,
+            data.id,
             usuario.id!!,
             novaExperiencia.cargo,
             novaExperiencia.empresa,

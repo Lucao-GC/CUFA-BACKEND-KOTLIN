@@ -15,10 +15,6 @@ data class PublicacaoRequestDto(
     val tipoContrato: String,
 
     @field:NotBlank(message = "O cargo não pode ser nulo, vazio ou branco")
-//    @field:Pattern(
-//        regexp = """\d{4}-\d{2}-\d{2} \d{2}:\d{2}""",
-//        message = "A data de expiração deve estar no formato yyyy-MM-dd HH:mm"
-//    )
     val dtExpiracao: LocalDateTime
 ) {
     fun toModel() = Publicacao(

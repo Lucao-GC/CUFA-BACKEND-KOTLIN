@@ -5,12 +5,12 @@ import jakarta.validation.constraints.NotNull
 
 data class CandidaturaRequestDto(
     @field:NotNull(message = "O id da publicação não pode ser nulo")
-    val fkPublicacao: Long,
+    val publicacaoId: Long,
     @field:NotNull(message = "O id da empresa não pode ser nulo")
-    val fkEmpresa: Long
+    val empresaId: Long
 ) {
     fun toModel() = Candidatura(
-        fkPublicacao = fkPublicacao,
-        fkEmpresa = fkEmpresa
+        publicacaoId = publicacaoId,
+        empresaId = empresaId
     )
 }

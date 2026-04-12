@@ -14,8 +14,8 @@ interface FuncionarioDao: JpaRepository<FuncionarioEntity, Long> {
 
     @Query("""
             SELECT f 
-            FROM funcionario f 
-            WHERE f.fkEmpresa = :empresaId
+            FROM funcionarios f 
+            WHERE f.empresaId = :empresaId
         """
     )
     fun findByEmpresaId(empresaId: Long): List<FuncionarioEntity>

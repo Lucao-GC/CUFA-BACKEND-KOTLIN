@@ -36,13 +36,13 @@ class CandidaturaRepositoryImpl(
 
     override fun criarCandidatura(data: Candidatura, email: String) {
         val usuario = buscarUsuarioPeloEmail(email)
-        val publicacao = buscarPublicacaoPeloId(data.fkPublicacao)
-        val empresa = buscarEmpresaPeloId(data.fkEmpresa)
+        val publicacao = buscarPublicacaoPeloId(data.publicacaoId)
+        val empresa = buscarEmpresaPeloId(data.empresaId)
         
         val candidaturaEntity = CandidaturaEntity(
             usuarioId = usuario.id!!,
-            publicacao = publicacao,
-            empresa = empresa,
+            publicacaoId = publicacao.publicacaoId!!,
+            empresaId = empresa.idEmpresa!!,
             candidatura = LocalDate.now()
         )
 
@@ -54,15 +54,15 @@ class CandidaturaRepositoryImpl(
     }
 
     override fun listarCandidatosPorVaga(vagaId: Long, page: Int, size: Int, email: String): CandidaturaResult {
-        val usuario = buscarUsuarioPeloEmail(email)
-        val totalOfUsers = dao.count()
+        val empresa = buscarEmpresaPeloEmail(email)
+        val totalOfUsers = dao.countByPublicacaoIdAndEmpresaId(vagaId, empresa.idEmpresa!!)
 
-        val totalOfPages = ceil(totalOfUsers.toDouble() / size).toInt()
+        val totalOfPages = if (totalOfUsers == 0L) 1 else ceil(totalOfUsers.toDouble() / size).toInt()
 
-        if (page > totalOfPages && totalOfUsers >= 0)
+        if (page < 1 || page > totalOfPages)
             throw PageNotFoundException("A página $page não foi encontrada")
 
-        val candidatos = listarCandidatosPorPublicacao(vagaId, page, size, usuario.id!!)
+        val candidatos = listarCandidatosPorPublicacao(vagaId, page, size, empresa.idEmpresa!!)
         val publicacao = buscarPublicacaoPeloId(vagaId)
 
         val nomeEmpresa = empresaDao.findNameByEmpresaId(publicacao.empresaId!!)
@@ -85,9 +85,8 @@ class CandidaturaRepositoryImpl(
 
     override fun verificarCandidaturaExistente(vagaId: Long, email: String): Boolean {
         val usuario = buscarUsuarioPeloEmail(email)
-        val vaga = buscarPublicacaoPeloId(vagaId)
 
-        return dao.existsByUsuarioIdAndPublicacao(usuario.id!!, vaga)
+        return dao.existsByUsuarioIdAndPublicacaoId(usuario.id!!, vagaId)
     }
 
     override fun listarPublicacoesCandidatadasPorUsuario(email: String): List<Publicacao> {
@@ -101,6 +100,10 @@ class CandidaturaRepositoryImpl(
         usuarioDao.findByEmail(email)
             .orElseThrow { UsuarioNotFoundException("O usuário com o email $email não existe") }
 
+    private fun buscarEmpresaPeloEmail(email: String): EmpresaEntity =
+        empresaDao.findByEmail(email)
+            .orElseThrow { EmpresaNotFoundException("A empresa com o email $email não existe") }
+
     private fun buscarPublicacaoPeloId(id: Long): PublicacaoEntity =
         publicacaoDao.findById(id)
             .orElseThrow { PublicacaoNotFoundException("A publicação com o ID:$id não existe") }
@@ -109,10 +112,10 @@ class CandidaturaRepositoryImpl(
         empresaDao.findById(id)
             .orElseThrow { EmpresaNotFoundException("A empresa com o ID:$id não existe") }
 
-    private fun listarCandidatosPorPublicacao(vagaId: Long, page: Int, size: Int, usuarioId: Long): List<Candidato> {
+    private fun listarCandidatosPorPublicacao(publicacaoId: Long, page: Int, size: Int, empresaId: Long): List<Candidato> {
         val offset = (page - 1) * size
 
-        val listaDeUsuariosEntity = usuarioDao.dadosPaginados(vagaId, offset, size, usuarioId)
+        val listaDeUsuariosEntity = usuarioDao.dadosPaginados(publicacaoId, empresaId, size, offset)
 
         return mapearUsuarios(listaDeUsuariosEntity)
     }
@@ -139,6 +142,7 @@ class CandidaturaRepositoryImpl(
             val idade = definirIdadeDoUsuario(dtNascUsuario!!)
 
             Candidato(
+                id = usuarioEntity.id!!,
                 nome = usuarioEntity.nome!!,
                 idade = idade,
                 biografia = usuarioEntity.biografia!!,
@@ -152,11 +156,12 @@ class CandidaturaRepositoryImpl(
 
     private fun mapearPublicacoes(candidaturasEntity: List<CandidaturaEntity>): List<Publicacao> {
         return candidaturasEntity.map { candidaturaEntity ->
-            val publicacaoEntity = candidaturaEntity.publicacao
+            val publicacaoEntity = buscarPublicacaoPeloId(candidaturaEntity.publicacaoId)
             val nomeEmpresa = empresaDao.findNameByEmpresaId(publicacaoEntity.empresaId!!
             )
 
             Publicacao(
+                publicacaoId = publicacaoEntity.publicacaoId,
                 empresaId = publicacaoEntity.empresaId,
                 nomeEmpresa = nomeEmpresa,
                 titulo = publicacaoEntity.titulo,

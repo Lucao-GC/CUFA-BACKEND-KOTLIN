@@ -45,7 +45,7 @@ class PublicacaoController(
     fun editar(@PathVariable id: Long, @RequestBody dto: PublicacaoRequestDto) {
         val data = dto.toUpdateModel(id)
 
-        service.editarPublicacao(id, data)
+        service.editarPublicacao(data)
     }
 
     @DeleteMapping("/{id}")

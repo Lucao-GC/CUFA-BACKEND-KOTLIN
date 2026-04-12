@@ -2,7 +2,6 @@ package cufa.conecta.com.application.dto.request.usuario
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import cufa.conecta.com.model.data.Usuario
-import jakarta.validation.constraints.Digits
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -11,8 +10,7 @@ import java.time.LocalDate
 
 data class UsuarioUpdateRequestDto(
     @field:NotBlank(message = "O campo CPF não pode ser nulo, vazio ou branco")
-    @field:Size(message = "O CPF deve conter 11 dígitos", min = 11, max = 11)
-    @field:Digits(message = "O CPF deve conter apenas números", integer = 11, fraction = 0)
+    @field:Size(message = "O CPF deve conter 11 dígitos", min = 11, max = 14)
     @field:CPF(message = "CPF inválido")
     val cpf: String,
     @field:NotBlank(message = "O campo telefone não pode ser nulo, vazio ou branco")
