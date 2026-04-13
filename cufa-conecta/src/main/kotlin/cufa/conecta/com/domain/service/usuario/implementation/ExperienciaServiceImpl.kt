@@ -1,7 +1,7 @@
 package cufa.conecta.com.domain.service.usuario.implementation
 
 import cufa.conecta.com.domain.service.usuario.ExperienciaService
-import cufa.conecta.com.model.data.Experiencia
+import cufa.conecta.com.model.data.usuario.Experiencia
 import cufa.conecta.com.resources.usuario.ExperienciaRepository
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service

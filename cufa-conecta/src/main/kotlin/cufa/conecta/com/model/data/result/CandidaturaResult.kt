@@ -1,6 +1,6 @@
 package cufa.conecta.com.model.data.result
 
-import cufa.conecta.com.model.data.Candidato
+import cufa.conecta.com.model.data.usuario.Candidato
 import java.time.LocalDateTime
 
 data class CandidaturaResult (

@@ -1,6 +1,6 @@
 package cufa.conecta.com.resources.empresa
 
-import cufa.conecta.com.model.data.Publicacao
+import cufa.conecta.com.model.data.empresa.Publicacao
 import cufa.conecta.com.model.data.result.PublicacaoResult
 
 interface PublicacaoRepository {

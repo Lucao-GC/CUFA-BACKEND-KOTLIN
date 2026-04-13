@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.response.empresa
 
-import cufa.conecta.com.model.data.Funcionario
+import cufa.conecta.com.model.data.empresa.Funcionario
 
 data class FuncionarioResponseDto(
     val id: Long,

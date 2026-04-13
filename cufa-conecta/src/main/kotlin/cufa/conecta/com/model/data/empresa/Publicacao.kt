@@ -1,4 +1,4 @@
-package cufa.conecta.com.model.data
+package cufa.conecta.com.model.data.empresa
 
 import java.time.LocalDateTime
 

@@ -1,5 +1,7 @@
 package cufa.conecta.com.config
 
+import cufa.conecta.com.config.autenticacao.AutenticacaoEntryPoint
+import cufa.conecta.com.config.autenticacao.AutenticacaoFilter
 import cufa.conecta.com.resources.AutenticacaoRepository
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

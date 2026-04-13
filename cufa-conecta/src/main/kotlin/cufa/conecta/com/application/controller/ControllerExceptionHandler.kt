@@ -12,6 +12,7 @@ import cufa.conecta.com.application.exception.UsuarioAutenticadoNotFound
 import cufa.conecta.com.application.exception.UsuarioNotFoundException
 import cufa.conecta.com.resources.empresa.exception.EmailExistenteException
 import cufa.conecta.com.resources.empresa.exception.EmpresaNotFoundException
+import cufa.conecta.com.resources.usuario.exception.AtualizarLocalizacaoException
 import cufa.conecta.com.resources.usuario.exception.UpdateCurriculoException
 import cufa.conecta.com.resources.usuario.exception.UsuarioExistenteException
 import org.springframework.http.HttpHeaders
@@ -34,6 +35,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 class ControllerExceptionHandler: ResponseEntityExceptionHandler() {
     @ExceptionHandler(
         UpdateCurriculoException::class,
+        AtualizarLocalizacaoException::class,
         CreateInternalServerError::class,
         Exception::class
     )

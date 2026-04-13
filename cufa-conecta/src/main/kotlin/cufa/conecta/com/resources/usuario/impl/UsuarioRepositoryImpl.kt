@@ -4,13 +4,15 @@ import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
 import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.config.GerenciadorTokenJwt
 import cufa.conecta.com.model.data.Login
-import cufa.conecta.com.model.data.Usuario
+import cufa.conecta.com.model.data.usuario.Usuario
 import cufa.conecta.com.model.data.result.UsuarioResult
+import cufa.conecta.com.model.data.usuario.Localizacao
 import cufa.conecta.com.resources.empresa.exception.EmailExistenteException
 import cufa.conecta.com.resources.empresa.exception.EmpresaNotFoundException
 import cufa.conecta.com.resources.usuario.UsuarioRepository
 import cufa.conecta.com.resources.usuario.dao.UsuarioDao
 import cufa.conecta.com.resources.usuario.entity.UsuarioEntity
+import cufa.conecta.com.resources.usuario.exception.AtualizarLocalizacaoException
 import cufa.conecta.com.resources.usuario.exception.UpdateCurriculoException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -123,6 +125,27 @@ class UsuarioRepositoryImpl(
         }
     }
 
+    override fun atualizarLocalizacao(email: String, data: Localizacao) {
+        val usuario = buscarUsuarioPorEmail(email)
+
+        val localizacaoUsuario = UsuarioEntity(
+            latitude = data.latitude,
+            longitude = data.longitude
+        )
+
+        runCatching {
+            dao.adicionarLocalizacao(
+                usuario.id!!,
+                localizacaoUsuario.latitude,
+                localizacaoUsuario.longitude
+            )
+        }.getOrElse {
+            throw AtualizarLocalizacaoException(
+                "Houve um erro ao tentar atualizar a localização do usuário!!"
+            )
+        }
+    }
+
     private fun validarEmailExistente(email: String) {
         if (dao.findByEmail(email).isPresent)
             throw EmailExistenteException("O email inserido já existe!!")
@@ -137,7 +160,7 @@ class UsuarioRepositoryImpl(
     }
 
     private fun buscarUsuarioPorEmail(email: String) = dao.findByEmail(email)
-        .orElseThrow { EmpresaNotFoundException("Email do usuário não encontrado") }
+        .orElseThrow { EmpresaNotFoundException("Email do usuário não encontrado $email") }
 
     private fun mapearUsuario(usuarioEntity: UsuarioEntity): UsuarioResult {
             val dtNascUsuario = usuarioEntity.dtNascimento

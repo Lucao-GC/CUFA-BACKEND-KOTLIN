@@ -4,6 +4,7 @@ import cufa.conecta.com.application.dto.request.LoginDto
 import cufa.conecta.com.application.dto.request.empresa.BiografiaRequestDto
 import cufa.conecta.com.application.dto.request.empresa.EmpresaRequestDto
 import cufa.conecta.com.application.dto.request.empresa.EmpresaUpdateRequestDto
+import cufa.conecta.com.application.dto.request.AtualizarLocalizacaoDto
 import cufa.conecta.com.application.dto.response.empresa.EmpresaResponseDto
 import cufa.conecta.com.application.dto.response.empresa.EmpresaTokenDto
 import cufa.conecta.com.application.exception.EmpresaNotExistsException
@@ -96,5 +97,12 @@ class EmpresaController(
         val data = dto.toModel()
 
         service.atualizarBiografia(data)
+    }
+
+    @PatchMapping("/localizacao")
+    @ResponseStatus(HttpStatus.OK)
+    fun atualizarLocalizacao(@RequestBody @Valid dto: AtualizarLocalizacaoDto) {
+
+        service.atualizarLocalizacao(dto.toModel())
     }
 }

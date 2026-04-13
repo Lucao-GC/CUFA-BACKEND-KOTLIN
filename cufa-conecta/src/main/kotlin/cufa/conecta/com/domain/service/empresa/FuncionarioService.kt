@@ -1,6 +1,6 @@
 package cufa.conecta.com.domain.service.empresa
 
-import cufa.conecta.com.model.data.Funcionario
+import cufa.conecta.com.model.data.empresa.Funcionario
 
 interface FuncionarioService {
     fun criarFuncionario(data: Funcionario)

@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.response.usuario
 
-import cufa.conecta.com.model.data.Experiencia
+import cufa.conecta.com.model.data.usuario.Experiencia
 import java.time.LocalDate
 
 data class ExperienciaResponseDto (

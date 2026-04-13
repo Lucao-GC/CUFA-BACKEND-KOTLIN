@@ -4,10 +4,10 @@ import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.application.exception.PageNotFoundException
 import cufa.conecta.com.application.exception.PublicacaoNotFoundException
 import cufa.conecta.com.application.exception.UsuarioNotFoundException
-import cufa.conecta.com.model.data.Candidato
+import cufa.conecta.com.model.data.usuario.Candidato
 import cufa.conecta.com.model.data.Candidatura
-import cufa.conecta.com.model.data.Experiencia
-import cufa.conecta.com.model.data.Publicacao
+import cufa.conecta.com.model.data.usuario.Experiencia
+import cufa.conecta.com.model.data.empresa.Publicacao
 import cufa.conecta.com.model.data.result.CandidaturaResult
 import cufa.conecta.com.resources.empresa.dao.EmpresaDao
 import cufa.conecta.com.resources.empresa.dao.PublicacaoDao

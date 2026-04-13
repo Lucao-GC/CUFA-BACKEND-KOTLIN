@@ -2,7 +2,7 @@ package cufa.conecta.com.resources.usuario.impl
 
 import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.application.exception.UsuarioNotFoundException
-import cufa.conecta.com.model.data.Experiencia
+import cufa.conecta.com.model.data.usuario.Experiencia
 import cufa.conecta.com.resources.usuario.ExperienciaRepository
 import cufa.conecta.com.resources.usuario.dao.ExperienciaDao
 import cufa.conecta.com.resources.usuario.dao.UsuarioDao

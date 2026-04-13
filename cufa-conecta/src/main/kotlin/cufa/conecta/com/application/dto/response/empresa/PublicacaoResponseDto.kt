@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.response.empresa
 
-import cufa.conecta.com.model.data.Publicacao
+import cufa.conecta.com.model.data.empresa.Publicacao
 import java.time.LocalDateTime
 
 data class PublicacaoResponseDto(

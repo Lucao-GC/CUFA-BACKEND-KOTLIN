@@ -1,6 +1,7 @@
 package cufa.conecta.com.application.controller.usuarios
 
 import cufa.conecta.com.application.dto.request.LoginDto
+import cufa.conecta.com.application.dto.request.AtualizarLocalizacaoDto
 import cufa.conecta.com.application.dto.request.usuario.UsuarioCadastroRequestDto
 import cufa.conecta.com.application.dto.request.usuario.UsuarioUpdateRequestDto
 import cufa.conecta.com.application.dto.response.usuario.UsuarioResponseDto
@@ -72,5 +73,12 @@ class UsuarioController(
         val usuarioAtualizado = dto.toModel()
 
         service.atualizar(usuarioAtualizado)
+    }
+
+    @PatchMapping("/localizacao")
+    @ResponseStatus(HttpStatus.OK)
+    fun atualizarLocalizacao(@RequestBody @Valid dto: AtualizarLocalizacaoDto) {
+
+        service.atualizarLocalizacao(dto.toModel())
     }
 }

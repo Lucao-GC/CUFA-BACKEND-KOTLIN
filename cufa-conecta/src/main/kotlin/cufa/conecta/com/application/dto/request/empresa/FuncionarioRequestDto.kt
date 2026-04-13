@@ -1,7 +1,7 @@
 package cufa.conecta.com.application.dto.request.empresa
 
 import cufa.conecta.com.domain.enum.Cargo
-import cufa.conecta.com.model.data.Funcionario
+import cufa.conecta.com.model.data.empresa.Funcionario
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size

@@ -1,4 +1,4 @@
-package cufa.conecta.com.model.data
+package cufa.conecta.com.model.data.usuario
 
 import java.time.LocalDate
 
@@ -16,4 +16,6 @@ data class Usuario (
     val cidade: String?= null,
     val biografia: String?= null,
     val curriculoUrl: String?= null,
+    val latitude: Double?= null,
+    val longitude: Double?= null
 )

@@ -9,15 +9,17 @@ data class EmpresaEntity(
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_empresa")
     val idEmpresa: Long ?= null,
-    val nome: String,
-    val email: String,
-    val senha: String,
-    val cep: String,
-    val endereco: String,
-    val numero: String,
-    val cnpj: String,
-    val area: String,
+    val nome: String ?= null,
+    val email: String ?= null,
+    val senha: String ?= null,
+    val cep: String ?= null,
+    val endereco: String ?= null,
+    val numero: String ?= null,
+    val cnpj: String ?= null,
+    val area: String ?= null,
     val biografia: String ?= null,
     @Column(name = "dt_cadastro")
-    val dtCadastro: LocalDate ?= null
+    val dtCadastro: LocalDate ?= null,
+    val latitude: Double? = null,
+    val longitude: Double? = null
 )

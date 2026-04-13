@@ -1,4 +1,4 @@
-package cufa.conecta.com.config
+package cufa.conecta.com.config.autenticacao
 
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

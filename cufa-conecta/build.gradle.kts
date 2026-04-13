@@ -23,6 +23,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
@@ -49,17 +51,7 @@ dependencies {
     //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4")
 
-    // Rabbit
-    implementation("org.springframework.boot:spring-boot-starter-amqp")
-
-    // Cache
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
-    implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-
-    // Docker
-    runtimeOnly("org.springframework.boot:spring-boot-docker-compose")
-
 }
 
 kotlin {

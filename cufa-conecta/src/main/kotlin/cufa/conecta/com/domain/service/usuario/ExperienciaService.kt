@@ -1,6 +1,6 @@
 package cufa.conecta.com.domain.service.usuario
 
-import cufa.conecta.com.model.data.Experiencia
+import cufa.conecta.com.model.data.usuario.Experiencia
 
 interface ExperienciaService {
     fun criarExperiencia(data: Experiencia)

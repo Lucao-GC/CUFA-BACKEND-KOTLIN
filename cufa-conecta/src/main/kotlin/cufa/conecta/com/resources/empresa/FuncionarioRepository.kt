@@ -1,6 +1,6 @@
 package cufa.conecta.com.resources.empresa
 
-import cufa.conecta.com.model.data.Funcionario
+import cufa.conecta.com.model.data.empresa.Funcionario
 
 interface FuncionarioRepository {
     fun criarFuncionario(data: Funcionario, empresaEmail: String)

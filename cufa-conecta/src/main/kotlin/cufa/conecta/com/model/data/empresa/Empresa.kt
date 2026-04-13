@@ -1,4 +1,4 @@
-package cufa.conecta.com.model.data
+package cufa.conecta.com.model.data.empresa
 
 data class Empresa(
     val id: Long? = null,

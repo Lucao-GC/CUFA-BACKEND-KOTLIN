@@ -3,7 +3,7 @@ package cufa.conecta.com.resources.empresa.impl
 import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.application.exception.PageNotFoundException
 import cufa.conecta.com.application.exception.PublicacaoNotFoundException
-import cufa.conecta.com.model.data.Publicacao
+import cufa.conecta.com.model.data.empresa.Publicacao
 import cufa.conecta.com.model.data.result.PublicacaoResult
 import cufa.conecta.com.resources.empresa.PublicacaoRepository
 import cufa.conecta.com.resources.empresa.dao.EmpresaDao

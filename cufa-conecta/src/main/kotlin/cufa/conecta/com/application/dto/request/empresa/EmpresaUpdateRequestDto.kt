@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.request.empresa
 
-import cufa.conecta.com.model.data.Empresa
+import cufa.conecta.com.model.data.empresa.Empresa
 import jakarta.validation.constraints.Digits
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size

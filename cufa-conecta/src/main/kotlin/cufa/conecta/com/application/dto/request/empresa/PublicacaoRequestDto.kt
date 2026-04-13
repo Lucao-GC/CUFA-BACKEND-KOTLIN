@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.request.empresa
 
-import cufa.conecta.com.model.data.Publicacao
+import cufa.conecta.com.model.data.empresa.Publicacao
 import jakarta.validation.constraints.NotBlank
 import java.time.LocalDateTime
 

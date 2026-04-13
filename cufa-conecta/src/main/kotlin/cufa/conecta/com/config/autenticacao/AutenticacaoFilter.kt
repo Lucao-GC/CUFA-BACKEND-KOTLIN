@@ -1,5 +1,6 @@
-package cufa.conecta.com.config
+package cufa.conecta.com.config.autenticacao
 
+import cufa.conecta.com.config.GerenciadorTokenJwt
 import cufa.conecta.com.resources.AutenticacaoRepository
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.Cookie

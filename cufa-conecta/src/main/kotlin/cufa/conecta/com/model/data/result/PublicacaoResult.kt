@@ -1,6 +1,6 @@
 package cufa.conecta.com.model.data.result
 
-import cufa.conecta.com.model.data.Publicacao
+import cufa.conecta.com.model.data.empresa.Publicacao
 
 data class PublicacaoResult(
     val paginaAtual: Int,

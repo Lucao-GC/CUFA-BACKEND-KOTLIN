@@ -1,7 +1,7 @@
 package cufa.conecta.com.domain.service.usuario
 
 import cufa.conecta.com.model.data.Candidatura
-import cufa.conecta.com.model.data.Publicacao
+import cufa.conecta.com.model.data.empresa.Publicacao
 import cufa.conecta.com.model.data.result.CandidaturaResult
 
 interface CandidaturaService {

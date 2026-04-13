@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.response.usuario
 
-import cufa.conecta.com.model.data.Candidato
+import cufa.conecta.com.model.data.usuario.Candidato
 import cufa.conecta.com.model.data.result.CandidaturaResult
 import java.time.LocalDateTime
 

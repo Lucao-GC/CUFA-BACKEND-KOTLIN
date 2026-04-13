@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.request.usuario
 
-import cufa.conecta.com.model.data.Usuario
+import cufa.conecta.com.model.data.usuario.Usuario
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size

@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.request.empresa
 
-import cufa.conecta.com.model.data.Biografia
+import cufa.conecta.com.model.data.empresa.Biografia
 import jakarta.validation.constraints.NotBlank
 
 data class BiografiaRequestDto(

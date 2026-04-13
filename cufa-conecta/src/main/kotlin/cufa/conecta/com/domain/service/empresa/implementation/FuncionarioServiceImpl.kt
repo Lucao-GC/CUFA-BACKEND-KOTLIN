@@ -1,7 +1,7 @@
 package cufa.conecta.com.domain.service.empresa.implementation
 
 import cufa.conecta.com.domain.service.empresa.FuncionarioService
-import cufa.conecta.com.model.data.Funcionario
+import cufa.conecta.com.model.data.empresa.Funcionario
 import cufa.conecta.com.resources.empresa.FuncionarioRepository
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service

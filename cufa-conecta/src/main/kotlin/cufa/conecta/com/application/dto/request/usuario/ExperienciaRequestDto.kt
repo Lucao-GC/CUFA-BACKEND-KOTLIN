@@ -1,6 +1,6 @@
 package cufa.conecta.com.application.dto.request.usuario
 
-import cufa.conecta.com.model.data.Experiencia
+import cufa.conecta.com.model.data.usuario.Experiencia
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDate

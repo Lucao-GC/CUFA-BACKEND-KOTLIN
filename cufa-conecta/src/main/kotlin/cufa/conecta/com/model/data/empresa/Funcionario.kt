@@ -1,4 +1,4 @@
-package cufa.conecta.com.model.data
+package cufa.conecta.com.model.data.empresa
 
 import cufa.conecta.com.domain.enum.Cargo
 

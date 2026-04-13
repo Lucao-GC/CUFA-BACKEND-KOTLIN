@@ -28,4 +28,6 @@ data class UsuarioEntity(
     val biografia: String ?= null,
     @Column(name = "curriculo_url")
     val curriculoUrl: String ?= null,
+    val latitude: Double? = null,
+    val longitude: Double? = null
 )

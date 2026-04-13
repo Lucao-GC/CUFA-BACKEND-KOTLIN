@@ -1,6 +1,7 @@
 package cufa.conecta.com.resources.usuario.dao
 
 import cufa.conecta.com.resources.usuario.entity.UsuarioEntity
+import jakarta.transaction.Transactional
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
@@ -14,6 +15,18 @@ interface UsuarioDao : JpaRepository<UsuarioEntity, Long> {
     @Modifying
     @Query("UPDATE cadastro_usuario user SET user.curriculoUrl = :curriculoUrl WHERE user.id = :id")
     fun atualizarCurriculoUrl(id: Long, curriculoUrl: String?)
+
+    @Modifying
+    @Transactional
+    @Query(
+        """
+            UPDATE cadastro_usuario user 
+            SET user.latitude = :latitude,
+            user.longitude = :longitude
+            WHERE user.id = :id
+        """
+    )
+    fun adicionarLocalizacao(id: Long, latitude: Double?, longitude: Double?)
 
     @Query(
         """

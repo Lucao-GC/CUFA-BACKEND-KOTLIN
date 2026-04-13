@@ -1,4 +1,4 @@
-package cufa.conecta.com.config
+package cufa.conecta.com.config.autenticacao
 
 import cufa.conecta.com.application.exception.DadosInvalidosException
 import cufa.conecta.com.resources.AutenticacaoRepository

@@ -3,15 +3,17 @@ package cufa.conecta.com.resources.empresa.impl
 import cufa.conecta.com.application.dto.response.empresa.EmpresaTokenDto
 import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.config.GerenciadorTokenJwt
-import cufa.conecta.com.model.data.Biografia
-import cufa.conecta.com.model.data.Empresa
 import cufa.conecta.com.model.data.Login
+import cufa.conecta.com.model.data.empresa.Biografia
+import cufa.conecta.com.model.data.empresa.Empresa
 import cufa.conecta.com.model.data.result.EmpresaResult
+import cufa.conecta.com.model.data.usuario.Localizacao
 import cufa.conecta.com.resources.empresa.EmpresaRepository
 import cufa.conecta.com.resources.empresa.dao.EmpresaDao
 import cufa.conecta.com.resources.empresa.entity.EmpresaEntity
 import cufa.conecta.com.resources.empresa.exception.EmailExistenteException
 import cufa.conecta.com.resources.empresa.exception.EmpresaNotFoundException
+import cufa.conecta.com.resources.usuario.exception.AtualizarLocalizacaoException
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -69,8 +71,8 @@ class EmpresaRepositoryImpl (
         val tokenJwt = gerenciadorTokenJwt.generateToken(dadosAutenticados)
 
         return EmpresaTokenDto(
-            empresaAutenticada.email,
-            empresaAutenticada.nome,
+            empresaAutenticada.email!!,
+            empresaAutenticada.nome!!,
             tokenJwt
         )
     }
@@ -119,6 +121,27 @@ class EmpresaRepositoryImpl (
         }
     }
 
+    override fun atualizarLocalizacao(email: String, data: Localizacao) {
+        val empresa = buscarEmpresaPorEmail(email)
+
+        val localizacaoUsuario = EmpresaEntity(
+            latitude = data.latitude,
+            longitude = data.longitude
+        )
+
+        runCatching {
+            dao.adicionarLocalizacao(
+                empresa.idEmpresa!!,
+                localizacaoUsuario.latitude,
+                localizacaoUsuario.longitude
+            )
+        }.getOrElse {
+            throw AtualizarLocalizacaoException(
+                "Houve um erro ao tentar atualizar a localização do usuário!!"
+            )
+        }
+    }
+
 
     private fun validarEmpresa(email: String, senha: String) {
         val credentials: Authentication = UsernamePasswordAuthenticationToken(email, senha)
@@ -141,13 +164,13 @@ class EmpresaRepositoryImpl (
 
     private fun mapearEmpresa(entity: EmpresaEntity): EmpresaResult {
         val empresa = EmpresaResult(
-            nome = entity.nome,
-            email = entity.email,
-            cep = entity.cep,
-            endereco = entity.endereco,
-            numero = entity.numero,
-            cnpj = entity.cnpj,
-            area = entity.area,
+            nome = entity.nome!!,
+            email = entity.email!!,
+            cep = entity.cep!!,
+            endereco = entity.endereco!!,
+            numero = entity.numero!!,
+            cnpj = entity.cnpj!!,
+            area = entity.area!!,
             biografia = entity.biografia
         )
 
@@ -157,13 +180,13 @@ class EmpresaRepositoryImpl (
     private fun mapearEmpresas(empresasEntity: List<EmpresaEntity>): List<EmpresaResult> {
         return empresasEntity.map { entity ->
             EmpresaResult(
-                nome = entity.nome,
-                email = entity.email,
-                cep = entity.cep,
-                endereco = entity.endereco,
-                numero = entity.numero,
-                cnpj = entity.cnpj,
-                area = entity.area,
+                nome = entity.nome!!,
+                email = entity.email!!,
+                cep = entity.cep!!,
+                endereco = entity.endereco!!,
+                numero = entity.numero!!,
+                cnpj = entity.cnpj!!,
+                area = entity.area!!,
                 biografia = entity.biografia
             )
         }

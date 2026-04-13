@@ -1,7 +1,7 @@
 package cufa.conecta.com.application.dto.request.usuario
 
 import com.fasterxml.jackson.annotation.JsonFormat
-import cufa.conecta.com.model.data.Usuario
+import cufa.conecta.com.model.data.usuario.Usuario
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size

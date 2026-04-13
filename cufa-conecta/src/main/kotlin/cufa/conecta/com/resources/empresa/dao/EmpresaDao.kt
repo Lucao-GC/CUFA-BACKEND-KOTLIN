@@ -30,4 +30,16 @@ interface EmpresaDao: JpaRepository<EmpresaEntity, Long> {
         WHERE c.idEmpresa = :idEmpresa
     """)
     fun findNameByEmpresaId(idEmpresa: Long): String
+
+    @Modifying
+    @Transactional
+    @Query(
+        """
+            UPDATE cadastro_empresa e 
+            SET e.latitude = :latitude,
+            e.longitude = :longitude
+            WHERE e.idEmpresa = :id
+        """
+    )
+    fun adicionarLocalizacao(id: Long, latitude: Double?, longitude: Double?)
 }

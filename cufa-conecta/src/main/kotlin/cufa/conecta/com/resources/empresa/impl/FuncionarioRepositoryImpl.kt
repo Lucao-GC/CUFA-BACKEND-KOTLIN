@@ -2,7 +2,7 @@ package cufa.conecta.com.resources.empresa.impl
 
 import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.application.exception.FuncionarioNotExistsException
-import cufa.conecta.com.model.data.Funcionario
+import cufa.conecta.com.model.data.empresa.Funcionario
 import cufa.conecta.com.resources.empresa.FuncionarioRepository
 import cufa.conecta.com.resources.empresa.dao.EmpresaDao
 import cufa.conecta.com.resources.empresa.dao.FuncionarioDao
