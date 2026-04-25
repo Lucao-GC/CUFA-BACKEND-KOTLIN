@@ -11,6 +11,7 @@ import cufa.conecta.com.resources.empresa.exception.EmailExistenteException
 import cufa.conecta.com.resources.empresa.exception.EmpresaNotFoundException
 import cufa.conecta.com.resources.usuario.UsuarioRepository
 import cufa.conecta.com.resources.usuario.dao.UsuarioDao
+import cufa.conecta.com.resources.usuario.dao.VagasDao
 import cufa.conecta.com.resources.usuario.entity.UsuarioEntity
 import cufa.conecta.com.resources.usuario.exception.AtualizarLocalizacaoException
 import cufa.conecta.com.resources.usuario.exception.UpdateCurriculoException
@@ -28,7 +29,8 @@ class UsuarioRepositoryImpl(
     private val dao: UsuarioDao,
     private val gerenciadorTokenJwt: GerenciadorTokenJwt,
     private val authenticationManager: AuthenticationManager,
-    private val passwordEncoder: PasswordEncoder
+    private val passwordEncoder: PasswordEncoder,
+    private val vagasDao: VagasDao
 ): UsuarioRepository {
     override fun cadastrarUsuario(data: Usuario) {
         val email = data.email!!
@@ -145,6 +147,8 @@ class UsuarioRepositoryImpl(
             )
         }
     }
+
+    override fun buscarVagasProximas(latitude: Double, longitude: Double) = vagasDao.buscarVagasProximas(latitude, longitude)
 
     private fun validarEmailExistente(email: String) {
         if (dao.findByEmail(email).isPresent)

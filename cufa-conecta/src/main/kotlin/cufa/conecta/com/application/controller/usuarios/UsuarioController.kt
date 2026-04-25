@@ -81,4 +81,9 @@ class UsuarioController(
 
         service.atualizarLocalizacao(dto.toModel())
     }
+
+    @GetMapping("/recomendar")
+    @ResponseStatus(HttpStatus.OK)
+    fun recomendar(@RequestParam latitude: Double, @RequestParam longitude: Double) =
+        service.recomendarVagas(latitude, longitude)
 }

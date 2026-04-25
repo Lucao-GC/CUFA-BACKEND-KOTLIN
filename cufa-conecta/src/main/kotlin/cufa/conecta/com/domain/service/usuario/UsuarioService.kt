@@ -13,4 +13,5 @@ interface UsuarioService {
     fun atualizar(data: Usuario)
     fun atualizarCurriculoUrl(curriculoUrl: String?)
     fun atualizarLocalizacao(data: Localizacao)
+    fun recomendarVagas(latitude: Double, longitude: Double): String?
 }

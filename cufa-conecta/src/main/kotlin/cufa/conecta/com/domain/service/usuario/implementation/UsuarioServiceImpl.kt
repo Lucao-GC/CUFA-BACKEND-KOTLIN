@@ -1,6 +1,7 @@
 package cufa.conecta.com.domain.service.usuario.implementation
 
 import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
+import cufa.conecta.com.domain.service.ai.IaGenerativaService
 import cufa.conecta.com.domain.service.usuario.UsuarioService
 import cufa.conecta.com.model.data.Login
 import cufa.conecta.com.model.data.usuario.Usuario
@@ -12,7 +13,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class UsuarioServiceImpl(
-    private val repository: UsuarioRepository
+    private val repository: UsuarioRepository,
+    private val iaService: IaGenerativaService
 ): UsuarioService {
     override fun cadastrarUsuario(data: Usuario) = repository.cadastrarUsuario(data)
 
@@ -47,5 +49,23 @@ class UsuarioServiceImpl(
         val email = auth?.name
 
         repository.atualizarLocalizacao(email!!, data)
+    }
+
+    override fun recomendarVagas(latitude: Double, longitude: Double): String? {
+
+        val vagas = repository.buscarVagasProximas(latitude, longitude)
+
+        val resumoVagas = vagas.joinToString("\n") { it.toString() }
+
+        val prompt = """
+        Analise a lista de vagas abaixo e indique quais são
+        mais recomendadas para o usuário com base na proximidade:
+
+        $resumoVagas
+
+        Retorne apenas o ranking das melhores vagas.
+        """
+
+        return iaService.gerarResposta(prompt)
     }
 }
