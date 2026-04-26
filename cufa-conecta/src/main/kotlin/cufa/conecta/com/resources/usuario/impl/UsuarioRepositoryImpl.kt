@@ -1,5 +1,6 @@
 package cufa.conecta.com.resources.usuario.impl
 
+import cufa.conecta.com.application.dto.response.vagas.VagaProximaDto
 import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
 import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.config.GerenciadorTokenJwt
@@ -7,6 +8,7 @@ import cufa.conecta.com.model.data.Login
 import cufa.conecta.com.model.data.usuario.Usuario
 import cufa.conecta.com.model.data.result.UsuarioResult
 import cufa.conecta.com.model.data.usuario.Localizacao
+import cufa.conecta.com.resources.empresa.dao.EmpresaDao
 import cufa.conecta.com.resources.empresa.exception.EmailExistenteException
 import cufa.conecta.com.resources.empresa.exception.EmpresaNotFoundException
 import cufa.conecta.com.resources.usuario.UsuarioRepository
@@ -30,7 +32,8 @@ class UsuarioRepositoryImpl(
     private val gerenciadorTokenJwt: GerenciadorTokenJwt,
     private val authenticationManager: AuthenticationManager,
     private val passwordEncoder: PasswordEncoder,
-    private val vagasDao: VagasDao
+    private val vagasDao: VagasDao,
+    private val empresaDao: EmpresaDao
 ): UsuarioRepository {
     override fun cadastrarUsuario(data: Usuario) {
         val email = data.email!!
@@ -148,7 +151,21 @@ class UsuarioRepositoryImpl(
         }
     }
 
-    override fun buscarVagasProximas(latitude: Double, longitude: Double) = vagasDao.buscarVagasProximas(latitude, longitude)
+    override fun buscarVagasProximas(latitude: Double, longitude: Double): List<VagaProximaDto> {
+        val vagasProximas = vagasDao.buscarVagasProximas(latitude, longitude)
+
+        return vagasProximas.map {
+            VagaProximaDto(
+                publicacaoId = it.publicacaoId!!,
+                empresaId = it.empresaId!!,
+                nomeEmpresa = buscarEmpresaPorId(it.empresaId!!),
+                titulo = it.titulo,
+                tipoContrato = it.tipoContrato,
+                dtExpiracao = it.dtExpiracao,
+                distancia = it.distancia ?: 0.0
+            )
+        }
+    }
 
     private fun validarEmailExistente(email: String) {
         if (dao.findByEmail(email).isPresent)
@@ -189,4 +206,11 @@ class UsuarioRepositoryImpl(
 
     private fun definirIdadeDoUsuario(dtNasc: LocalDate?) =
         dtNasc?.let { Period.between(it, LocalDate.now()).years }
+
+    private fun buscarEmpresaPorId(id: Long): String {
+        val empresa = empresaDao.findById(id)
+            .orElseThrow { EmpresaNotFoundException("Email do usuário não encontrado") }
+
+        return empresa.nome!!
+    }
 }

@@ -4,13 +4,16 @@ import cufa.conecta.com.application.dto.request.LoginDto
 import cufa.conecta.com.application.dto.request.AtualizarLocalizacaoDto
 import cufa.conecta.com.application.dto.request.usuario.UsuarioCadastroRequestDto
 import cufa.conecta.com.application.dto.request.usuario.UsuarioUpdateRequestDto
+import cufa.conecta.com.application.dto.response.vagas.VagasRecomendadasResponseDto
 import cufa.conecta.com.application.dto.response.usuario.UsuarioResponseDto
 import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
+import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.domain.service.usuario.UsuarioService
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -84,6 +87,11 @@ class UsuarioController(
 
     @GetMapping("/recomendar")
     @ResponseStatus(HttpStatus.OK)
-    fun recomendar(@RequestParam latitude: Double, @RequestParam longitude: Double) =
-        service.recomendarVagas(latitude, longitude)
+    fun recomendar(@RequestParam latitude: Double, @RequestParam longitude: Double): VagasRecomendadasResponseDto {
+        val auth = SecurityContextHolder.getContext().authentication
+
+        if (!auth.isAuthenticated) throw CreateInternalServerError("Usuário não autenticado")
+
+        return service.recomendarVagas(latitude, longitude)
+    }
 }

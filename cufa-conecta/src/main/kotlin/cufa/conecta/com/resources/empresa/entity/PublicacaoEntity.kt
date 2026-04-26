@@ -2,6 +2,7 @@ package cufa.conecta.com.resources.empresa.entity
 
 import jakarta.persistence.*
 import java.time.LocalDateTime
+import kotlin.jvm.Transient
 
 @Entity(name = "publicacao")
 data class PublicacaoEntity(
@@ -20,4 +21,10 @@ data class PublicacaoEntity(
     val dtExpiracao: LocalDateTime,
     @Column(name= "dt_publicacao")
     val dtPublicacao: LocalDateTime? = null,
+
+    @Transient
+    val distancia: Double? = null,
+
+    @Transient
+    val nomeEmpresa: String? = null
 )

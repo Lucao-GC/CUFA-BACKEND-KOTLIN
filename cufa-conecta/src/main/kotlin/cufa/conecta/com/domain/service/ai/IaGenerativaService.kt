@@ -13,7 +13,6 @@ class IaGenerativaService(
         .build()
 
     fun gerarResposta(prompt: String): String? {
-
         val body = mapOf(
             "model" to "llama3",
             "prompt" to prompt,
@@ -27,6 +26,6 @@ class IaGenerativaService(
             .bodyToMono(Map::class.java)
             .block()
 
-        return response?.get("response") as String?
+        return response?.get("response") as? String
     }
 }

@@ -1,5 +1,6 @@
 package cufa.conecta.com.domain.service.usuario
 
+import cufa.conecta.com.application.dto.response.vagas.VagasRecomendadasResponseDto
 import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
 import cufa.conecta.com.model.data.Login
 import cufa.conecta.com.model.data.usuario.Usuario
@@ -13,5 +14,5 @@ interface UsuarioService {
     fun atualizar(data: Usuario)
     fun atualizarCurriculoUrl(curriculoUrl: String?)
     fun atualizarLocalizacao(data: Localizacao)
-    fun recomendarVagas(latitude: Double, longitude: Double): String?
+    fun recomendarVagas(latitude: Double, longitude: Double): VagasRecomendadasResponseDto
 }
