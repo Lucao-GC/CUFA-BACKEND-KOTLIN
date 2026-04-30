@@ -1,11 +1,13 @@
 package cufa.conecta.com.application.controller.usuarios
 
 import cufa.conecta.com.application.dto.request.usuario.CurriculoRequestDto
+import cufa.conecta.com.application.dto.response.usuario.AnaliseCurriculoResponseDto
 import cufa.conecta.com.application.dto.response.usuario.CurriculoResponseDto
 import cufa.conecta.com.domain.service.usuario.CurriculoService
 import cufa.conecta.com.domain.service.usuario.UsuarioService
 import jakarta.validation.Valid
 import org.springframework.core.io.Resource
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
@@ -45,7 +47,7 @@ class CurriculoController(
     }
 
     @PostMapping("/update")
-    fun updateCurriculoUsuario(@RequestParam("file") file: MultipartFile): String {
+    fun updateCurriculoUsuario(@RequestParam file: MultipartFile): String {
         val filename = service.salvarArquivoCurriculo(file)
         val curriculoUrl = service.gerarUrlArquivo(filename)
 
@@ -67,5 +69,11 @@ class CurriculoController(
         usuarioService.atualizarCurriculoUrl(null)
 
         return "Currículo deletado com sucesso."
+    }
+
+    @PostMapping("/curriculo/analisar")
+    @ResponseStatus(HttpStatus.OK)
+    fun analisarCurriculo(@RequestBody file: MultipartFile): AnaliseCurriculoResponseDto {
+        return service.analisarCurriculo(file)
     }
 }

@@ -1,7 +1,14 @@
 package cufa.conecta.com.domain.service.usuario.implementation
 
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import cufa.conecta.com.application.dto.request.usuario.AnaliseCurriculoDto
+import cufa.conecta.com.application.dto.response.usuario.AnaliseCurriculoResponseDto
+import cufa.conecta.com.application.exception.CreateInternalServerError
+import cufa.conecta.com.domain.service.ai.IaGenerativaService
 import cufa.conecta.com.domain.service.usuario.CurriculoService
+import org.apache.pdfbox.pdmodel.PDDocument
+import org.apache.pdfbox.text.PDFTextStripper
 import org.springframework.core.io.Resource
 import org.springframework.core.io.UrlResource
 import org.springframework.stereotype.Service
@@ -13,7 +20,10 @@ import java.nio.file.StandardCopyOption
 import java.util.*
 
 @Service
-class CurriculoServiceImpl : CurriculoService {
+class CurriculoServiceImpl(
+    private val iaService: IaGenerativaService,
+    private val objectMapper: ObjectMapper
+) : CurriculoService {
 
     private val uploadDir: Path = Paths.get("uploads/curriculos").also {
         runCatching { Files.createDirectories(it) }
@@ -58,6 +68,63 @@ class CurriculoServiceImpl : CurriculoService {
         }
     }
 
-    override fun gerarUrlArquivo(filename: String): String =
-        "http://localhost:8080/curriculos/download/$filename"
+    override fun gerarUrlArquivo(filename: String): String =  "http://localhost:8080/curriculos/download/$filename"
+
+    override fun analisarCurriculo(file: MultipartFile): AnaliseCurriculoResponseDto {
+
+        val textoCurriculo = extrairTexto(file)
+
+        if (textoCurriculo.isBlank()) {
+            throw CreateInternalServerError("Não foi possível extrair texto do currículo")
+        }
+
+        val prompt = """
+        Você é um especialista em recrutamento e análise de currículos.
+
+        Sua tarefa:
+        - Analise o currículo abaixo
+        - Identifique pontos de melhoria
+        - Sugira melhorias práticas
+        - Retorne SOMENTE um JSON
+
+        Formato esperado:
+        {
+          "resumo": "Breve avaliação geral",
+          "pontosFortes": ["..."],
+          "pontosMelhoria": ["..."],
+          "sugestoes": ["..."]
+        }
+
+        Currículo:
+        $textoCurriculo
+    """
+
+        val resposta = iaService.gerarResposta(prompt)
+            ?: throw CreateInternalServerError("IA indisponível")
+
+        val analise: AnaliseCurriculoDto = runCatching {
+            objectMapper.readValue(resposta, AnaliseCurriculoDto::class.java)
+        }.getOrElse {
+            throw CreateInternalServerError("Erro ao interpretar resposta da IA: ${it.message}")
+        }
+
+        return AnaliseCurriculoResponseDto(analise)
+    }
+
+    private fun extrairTexto(file: MultipartFile): String {
+        val nome = file.originalFilename ?: ""
+
+        return when {
+            nome.endsWith(".pdf") -> extrairPdf(file)
+            else -> throw CreateInternalServerError("Formato não suportado")
+        }
+    }
+
+    fun extrairPdf(file: MultipartFile): String {
+        val document = PDDocument.load(file.inputStream)
+        val stripper = PDFTextStripper()
+        val texto = stripper.getText(document)
+        document.close()
+        return texto
+    }
 }

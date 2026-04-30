@@ -48,6 +48,10 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 
+    //leitura de docs
+    implementation("org.apache.pdfbox:pdfbox:2.0.29")
+    implementation("org.apache.poi:poi-ooxml:5.2.3")
+
     //Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.4")
 
