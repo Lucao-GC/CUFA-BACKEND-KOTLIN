@@ -15,6 +15,10 @@ interface UsuarioDao : JpaRepository<UsuarioEntity, Long> {
     @Query("UPDATE cadastro_usuario user SET user.curriculoUrl = :curriculoUrl WHERE user.id = :id")
     fun atualizarCurriculoUrl(id: Long, curriculoUrl: String?)
 
+    @Modifying
+    @Query("UPDATE cadastro_usuario user SET user.fotoUrl = :fotoUrl WHERE user.id = :id")
+    fun atualizarFotoUrl(id: Long, fotoUrl: String?)
+
     @Query(
         """
         SELECT * 

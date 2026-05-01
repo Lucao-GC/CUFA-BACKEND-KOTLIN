@@ -1,5 +1,6 @@
 package cufa.conecta.com.domain.service.empresa.implementation
 
+import cufa.conecta.com.config.UsuarioAutenticadoHelper
 import cufa.conecta.com.application.exception.InvalidPageNumberException
 import cufa.conecta.com.application.exception.InvalidSizeNumberException
 import cufa.conecta.com.domain.service.empresa.PublicacaoService
@@ -8,7 +9,6 @@ import cufa.conecta.com.model.data.result.PublicacaoResult
 import cufa.conecta.com.resources.empresa.PublicacaoRepository
 import cufa.conecta.config.RabbitConfig
 import org.springframework.amqp.rabbit.core.RabbitTemplate
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,11 +17,8 @@ class PublicacaoServiceImpl(
     private val rabbitTemplate: RabbitTemplate
 ): PublicacaoService {
     override fun criar(data: Publicacao) {
-        val auth = SecurityContextHolder.getContext().authentication
-
-        val email = auth?.name
-
-        repository.criar(data, email!!)
+        val email = UsuarioAutenticadoHelper.emailObrigatorio()
+        repository.criar(data, email)
         rabbitTemplate.convertAndSend(RabbitConfig.QUEUE_NAME, data)
     }
 
@@ -32,30 +29,20 @@ class PublicacaoServiceImpl(
     }
 
     override fun buscarPublicacoesDaEmpresa(): List<Publicacao> {
-        val auth = SecurityContextHolder.getContext().authentication
-
-        val email = auth?.name
-
-        val publicacoes = repository.buscarPublicacoesPorEmpresaEmail(email!!)
-
-        return publicacoes
+        val email = UsuarioAutenticadoHelper.emailObrigatorio()
+        return repository.buscarPublicacoesPorEmpresaEmail(email)
     }
 
     override fun findById(id: Long): Publicacao = repository.findById(id)
 
     override fun editarPublicacao(data: Publicacao) {
-        val auth = SecurityContextHolder.getContext().authentication
-
-        val email = auth?.name
-
-        repository.atualizar(data, email!!)
+        val email = UsuarioAutenticadoHelper.emailObrigatorio()
+        repository.atualizar(data, email)
     }
 
     override fun delete(id: Long) {
-        val auth = SecurityContextHolder.getContext().authentication
-        val email = auth?.name
-
-        repository.delete(id, email!!)
+        val email = UsuarioAutenticadoHelper.emailObrigatorio()
+        repository.delete(id, email)
     }
 
     private fun validatePageAndSize(page: Int, size: Int) {

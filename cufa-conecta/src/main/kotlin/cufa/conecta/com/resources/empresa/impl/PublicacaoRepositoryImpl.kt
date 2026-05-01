@@ -42,10 +42,14 @@ class PublicacaoRepositoryImpl(
     override fun buscarTodas(page: Int, size: Int): PublicacaoResult {
         val totalOfPublishes = dao.count()
 
-        val totalOfPages = ceil(totalOfPublishes.toDouble() / size).toInt()
+        val totalOfPages = when {
+            totalOfPublishes == 0L -> 1
+            else -> ceil(totalOfPublishes.toDouble() / size).toInt().coerceAtLeast(1)
+        }
 
-        if (page > totalOfPages && totalOfPublishes >= 0)
+        if (totalOfPublishes > 0 && page > totalOfPages) {
             throw PageNotFoundException("A página $page não foi encontrada")
+        }
 
         val publicacoes = listarPublicacoes(page, size)
 
@@ -69,7 +73,7 @@ class PublicacaoRepositoryImpl(
 
     override fun findById(id: Long): Publicacao {
         val entity = buscarPublicacaoPorId(id)
-        val nomeEmpresa = empresaDao.findNameByEmpresaId(entity.empresaId!!)
+        val nomeEmpresa = resolverNomeEmpresa(entity.empresaId)
 
         val publicacao = Publicacao(
             publicacaoId = entity.publicacaoId,
@@ -129,7 +133,7 @@ class PublicacaoRepositoryImpl(
 
     private fun mapearPublicacoes(publicacoesEntity: List<PublicacaoEntity>): List<Publicacao> {
         return publicacoesEntity.map { entity ->
-            val nomeEmpresa = empresaDao.findNameByEmpresaId(entity.empresaId!!)
+            val nomeEmpresa = resolverNomeEmpresa(entity.empresaId)
 
             Publicacao(
                 publicacaoId = entity.publicacaoId,
@@ -142,6 +146,12 @@ class PublicacaoRepositoryImpl(
                 dtPublicacao = entity.dtPublicacao
             )
         }
+    }
+
+    /** Evita NPE quando `id_empresa` é nulo ou empresa não existe no banco. */
+    private fun resolverNomeEmpresa(empresaId: Long?): String? {
+        if (empresaId == null) return null
+        return runCatching { empresaDao.findNameByEmpresaId(empresaId) }.getOrNull()
     }
 
     private fun buscarEmpresaPorEmail(email: String) =

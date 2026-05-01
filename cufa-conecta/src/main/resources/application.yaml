@@ -2,8 +2,13 @@ server:
   port: 8080
 
 spring:
+  docker:
+    compose:
+      # Desligado: use Redis/Rabbit/MySQL já rodando na máquina (sem depender do CLI Docker).
+      enabled: false
   cache:
-    type: redis
+    # simple = cache em memória (não exige Redis). Para produção com Redis, use type: redis e suba o serviço.
+    type: simple
   jpa:
     show-sql: false
     hibernate:
@@ -22,6 +27,9 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+    # Schema já existente sem flyway_schema_history (ex.: script manual): baseline na V6 = não reexecuta V1–V6.
+    baseline-on-migrate: true
+    baseline-version: 6
   rabbitmq:
     host: localhost
     port: 5672
@@ -29,5 +37,6 @@ spring:
     password: secret
 
 jwt:
-  validity: 86400
+  # Duração do token em SEGUNDOS (604800 = 7 dias). Reduz “sair sozinho” em dev; em produção ajuste conforme política.
+  validity: 604800
   secret: RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YX]

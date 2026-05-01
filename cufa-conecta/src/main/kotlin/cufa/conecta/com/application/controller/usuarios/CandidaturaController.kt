@@ -15,10 +15,27 @@ class CandidaturaController(
 ) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun criarCandidatura(@RequestBody @Valid dto: CandidaturaRequestDto) {
+    fun criarCandidatura(@RequestBody @Valid dto: CandidaturaRequestDto): Map<String, Boolean> {
         val data = dto.toModel()
-
         service.criarCandidatura(data)
+        return mapOf("ok" to true)
+    }
+
+    /** Rotas literais antes de `/{vagaId}` para não capturar "usuario" como id numérico. */
+    @GetMapping("/usuario")
+    fun verCandidaturasPorUsuario(): List<PublicacaoResponseDto> {
+        val listaDeVagasCandidatas = service.listarPublicacoesCandidatadasPorUsuario()
+
+        val result = PublicacaoResponseDto.listOf(listaDeVagasCandidatas)
+
+        return result
+    }
+
+    @GetMapping("/verificar/{vagaId}")
+    fun verificarCandidaturaExistente(@PathVariable vagaId: Long): Boolean {
+        val candidaturaExistente = service.verificarCandidaturaExistente(vagaId)
+
+        return candidaturaExistente
     }
 
     @GetMapping("/{vagaId}")
@@ -31,22 +48,6 @@ class CandidaturaController(
         val candidatura = service.listarCandidatosPorVaga(vagaId, page, size)
 
         val result = CandidaturaResponseDto.of(candidatura)
-
-        return result
-    }
-
-    @GetMapping("/verificar/{vagaId}")
-    fun verificarCandidaturaExistente(@PathVariable vagaId: Long): Boolean {
-        val candidaturaExistente = service.verificarCandidaturaExistente(vagaId)
-
-        return candidaturaExistente
-    }
-
-    @GetMapping("/usuario")
-    fun verCandidaturasPorUsuario(): List<PublicacaoResponseDto> {
-        val listaDeVagasCandidatas = service.listarPublicacoesCandidatadasPorUsuario()
-
-        val result = PublicacaoResponseDto.listOf(listaDeVagasCandidatas)
 
         return result
     }

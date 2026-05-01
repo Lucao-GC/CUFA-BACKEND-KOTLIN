@@ -1,6 +1,5 @@
 package cufa.conecta.com.config
 
-
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -10,11 +9,11 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.nio.charset.StandardCharsets
-import java.util.*
+import java.util.Date
 import javax.crypto.SecretKey
 
 @Component
-class GerenciadorTokenJwt(){
+class GerenciadorTokenJwt {
 
     @Value("\${jwt.secret}")
     private lateinit var secret: String
@@ -28,8 +27,8 @@ class GerenciadorTokenJwt(){
 
     fun generateToken(authentication: Authentication): String {
         val now = Date()
-
-        val expiration = Date(now.time + jwtTokenValidity + 10000)
+        val validityMs = jwtTokenValidity * 1000L
+        val expiration = Date(now.time + validityMs)
 
         val authorities = authentication.authorities.joinToString(",") { it.authority }
 
@@ -42,33 +41,36 @@ class GerenciadorTokenJwt(){
             .compact()
     }
 
-        fun <T> getClaimFromToken(
-            token: String,
-            claimsResolver: (Claims) -> T
-        ): T {
-            val claims = getAllClaimsFromToken(token)
-            return claimsResolver(claims)
-        }
-
-        fun validateToken(
-            token: String,
-            userDetails: UserDetails
-        ): Boolean {
-            val username = getUsernameFromToken(token)
-            return username == userDetails.username && !isTokenExpired(token)
-        }
-
-        private fun isTokenExpired(token: String): Boolean {
-            val expiration = getExpirationDateFromToken(token)
-            return expiration.before(Date())
-        }
-
-        private fun getAllClaimsFromToken(token: String): Claims =
-            Jwts.parserBuilder()
-                .setSigningKey(parseSecret())
-                .build()
-                .parseClaimsJws(token)
-                .body
-
-        private fun parseSecret(): SecretKey = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
+    fun <T> getClaimFromToken(
+        token: String,
+        claimsResolver: (Claims) -> T,
+    ): T {
+        val claims = getAllClaimsFromToken(token)
+        return claimsResolver(claims)
     }
+
+    fun validateToken(
+        token: String,
+        userDetails: UserDetails,
+    ): Boolean {
+        val username = getUsernameFromToken(token)
+        return username == userDetails.username && !isTokenExpired(token)
+    }
+
+    private fun isTokenExpired(token: String): Boolean {
+        val expMillis = getExpirationDateFromToken(token).time
+        val skewMillis = 120_000L
+        return System.currentTimeMillis() > expMillis + skewMillis
+    }
+
+    private fun getAllClaimsFromToken(token: String): Claims =
+        Jwts.parserBuilder()
+            .setSigningKey(parseSecret())
+            // tolera diferença de relógio entre cliente/servidor (evita falhas intermitentes)
+            .setAllowedClockSkewSeconds(120)
+            .build()
+            .parseClaimsJws(token)
+            .body
+
+    private fun parseSecret(): SecretKey = Keys.hmacShaKeyFor(secret.toByteArray(StandardCharsets.UTF_8))
+}

@@ -13,7 +13,8 @@ data class UsuarioResponseDto(
     val estado: String?,
     val cidade: String?,
     val biografia: String?,
-    val curriculoUrl: String?
+    val curriculoUrl: String?,
+    val fotoUrl: String?,
 ) {
     companion object {
         fun of(usuarioResult: UsuarioResult) = UsuarioResponseDto(
@@ -27,7 +28,8 @@ data class UsuarioResponseDto(
             estado = usuarioResult.estado,
             cidade = usuarioResult.cidade,
             biografia = usuarioResult.biografia,
-            curriculoUrl = usuarioResult.curriculoUrl
+            curriculoUrl = usuarioResult.curriculoUrl,
+            fotoUrl = usuarioResult.fotoUrl,
         )
     }
 }

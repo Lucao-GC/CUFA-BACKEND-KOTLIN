@@ -1,5 +1,6 @@
 package cufa.conecta.com.resources.usuario.impl
 
+import cufa.conecta.com.application.dto.request.usuario.UsuarioPerfilPatchDto
 import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
 import cufa.conecta.com.application.exception.CreateInternalServerError
 import cufa.conecta.com.config.GerenciadorTokenJwt
@@ -46,7 +47,8 @@ class UsuarioRepositoryImpl(
             estado = data.estado,
             cidade = data.cidade,
             biografia = data.biografia,
-            curriculoUrl = data.curriculoUrl
+            curriculoUrl = data.curriculoUrl,
+            fotoUrl = null,
         )
 
         runCatching {
@@ -104,7 +106,9 @@ class UsuarioRepositoryImpl(
             estadoCivil = data.estadoCivil,
             estado = data.estado,
             cidade = data.cidade,
-            biografia = data.biografia
+            biografia = data.biografia,
+            curriculoUrl = usuarioExistente.curriculoUrl,
+            fotoUrl = usuarioExistente.fotoUrl,
         )
 
         runCatching {
@@ -120,6 +124,38 @@ class UsuarioRepositoryImpl(
             dao.atualizarCurriculoUrl(userId.id!!, curriculoUrl)
         }.getOrElse {
             throw UpdateCurriculoException("Falha ao atualizar o curriculo!!")
+        }
+    }
+
+    override fun patchPerfil(email: String, dto: UsuarioPerfilPatchDto) {
+        val e = buscarUsuarioPorEmail(email)
+        val merged = UsuarioEntity(
+            id = e.id,
+            nome = dto.nome ?: e.nome,
+            email = e.email,
+            senha = e.senha,
+            cpf = e.cpf,
+            telefone = e.telefone,
+            escolaridade = e.escolaridade,
+            dtNascimento = e.dtNascimento,
+            estadoCivil = e.estadoCivil,
+            estado = dto.estado ?: e.estado,
+            cidade = dto.cidade ?: e.cidade,
+            biografia = dto.biografia ?: e.biografia,
+            curriculoUrl = e.curriculoUrl,
+            fotoUrl = dto.fotoUrl ?: e.fotoUrl,
+        )
+        runCatching { dao.save(merged) }.getOrElse {
+            throw CreateInternalServerError("Falha ao atualizar o perfil!!")
+        }
+    }
+
+    override fun atualizarFotoUrl(email: String, fotoUrl: String?) {
+        val user = buscarUsuarioPorEmail(email)
+        runCatching {
+            dao.atualizarFotoUrl(user.id!!, fotoUrl)
+        }.getOrElse {
+            throw CreateInternalServerError("Falha ao atualizar a foto do perfil!!")
         }
     }
 
@@ -154,7 +190,8 @@ class UsuarioRepositoryImpl(
                 estado = usuarioEntity.estado,
                 cidade = usuarioEntity.cidade,
                 biografia = usuarioEntity.biografia,
-                curriculoUrl = usuarioEntity.curriculoUrl
+                curriculoUrl = usuarioEntity.curriculoUrl,
+                fotoUrl = usuarioEntity.fotoUrl,
             )
 
         return usuario

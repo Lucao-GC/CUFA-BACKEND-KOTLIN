@@ -1,5 +1,6 @@
 package cufa.conecta.com.resources.usuario
 
+import cufa.conecta.com.application.dto.request.usuario.UsuarioPerfilPatchDto
 import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
 import cufa.conecta.com.model.data.Login
 import cufa.conecta.com.model.data.Usuario
@@ -13,4 +14,6 @@ interface UsuarioRepository {
     fun mostrarDados(email: String): UsuarioResult
     fun atualizar(data: Usuario, email: String)
     fun atualizarCurriculoUrl(email: String, curriculoUrl: String?)
+    fun patchPerfil(email: String, dto: UsuarioPerfilPatchDto)
+    fun atualizarFotoUrl(email: String, fotoUrl: String?)
 }

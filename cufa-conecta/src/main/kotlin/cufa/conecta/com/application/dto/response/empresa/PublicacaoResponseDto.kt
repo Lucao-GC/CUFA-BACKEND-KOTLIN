@@ -10,19 +10,21 @@ data class PublicacaoResponseDto(
     val tipoContrato: String,
     val dtExpiracao: LocalDateTime,
     val dtPublicacao: LocalDateTime,
-    val nomeEmpresa: String
+    val nomeEmpresa: String,
 ) {
     companion object {
+        private val SEM_DATA = LocalDateTime.of(1970, 1, 1, 0, 0)
+
         fun listOf(listaDePublicacoes: List<Publicacao>): List<PublicacaoResponseDto> {
             return listaDePublicacoes.map { data ->
                 PublicacaoResponseDto(
-                    publicacaoId = data.publicacaoId!!,
-                    nomeEmpresa = data.nomeEmpresa!!,
-                    titulo = data.titulo!!,
-                    descricao = data.descricao!!,
-                    tipoContrato = data.tipoContrato!!,
-                    dtExpiracao = data.dtExpiracao!!,
-                    dtPublicacao = data.dtPublicacao!!
+                    publicacaoId = data.publicacaoId ?: 0L,
+                    nomeEmpresa = data.nomeEmpresa ?: "",
+                    titulo = data.titulo ?: "",
+                    descricao = data.descricao ?: "",
+                    tipoContrato = data.tipoContrato ?: "",
+                    dtExpiracao = data.dtExpiracao ?: data.dtPublicacao ?: SEM_DATA,
+                    dtPublicacao = data.dtPublicacao ?: SEM_DATA,
                 )
             }
         }

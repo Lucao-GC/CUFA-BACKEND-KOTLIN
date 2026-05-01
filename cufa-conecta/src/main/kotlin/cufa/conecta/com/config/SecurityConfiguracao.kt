@@ -24,7 +24,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableMethodSecurity
 class SecurityConfiguracao(
     private val autenticacaoRepository: AutenticacaoRepository,
-    private val autenticacaoEntryPoint: AutenticacaoEntryPoint
+    private val autenticacaoEntryPoint: AutenticacaoEntryPoint,
+    private val gerenciadorTokenJwt: GerenciadorTokenJwt,
 ) {
     companion object {
         private val ALLOWED_URLS =
@@ -69,21 +70,17 @@ class SecurityConfiguracao(
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
 
-        http.addFilterBefore(jwtAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter::class.java)
+        http.addFilterBefore(
+            jwtAuthenticationFilterBean(gerenciadorTokenJwt),
+            UsernamePasswordAuthenticationFilter::class.java,
+        )
 
         return http.build()
     }
 
     @Bean
-    fun jwtAuthenticationEntryPointBean(): AutenticacaoEntryPoint = AutenticacaoEntryPoint()
-
-    @Bean
-    fun jwtAuthenticationFilterBean(): AutenticacaoFilter {
-        return AutenticacaoFilter(autenticacaoRepository, jwtAuthenticationUtilBean())
-    }
-
-    @Bean
-    fun jwtAuthenticationUtilBean(): GerenciadorTokenJwt = GerenciadorTokenJwt()
+    fun jwtAuthenticationFilterBean(gerenciadorTokenJwt: GerenciadorTokenJwt): AutenticacaoFilter =
+        AutenticacaoFilter(autenticacaoRepository, gerenciadorTokenJwt)
 
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
@@ -91,7 +88,13 @@ class SecurityConfiguracao(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:5173") // frontend
+        // Vite (5173), Expo web / Metro (8081, 19006, …), e mesmo PC na LAN (192.168.x.x) para testar no celular.
+        configuration.allowedOriginPatterns = listOf(
+            "http://localhost:*",
+            "http://127.0.0.1:*",
+            "http://192.168.*:*",
+            "http://10.0.2.2:*",
+        )
         configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
         configuration.allowedHeaders = listOf("*")
         configuration.allowCredentials = true
