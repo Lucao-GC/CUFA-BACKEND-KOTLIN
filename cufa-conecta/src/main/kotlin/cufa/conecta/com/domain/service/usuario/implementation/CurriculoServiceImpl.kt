@@ -99,13 +99,14 @@ class CurriculoServiceImpl(
         $textoCurriculo
     """
 
-        val resposta = iaService.gerarResposta(prompt)
-            ?: throw CreateInternalServerError("IA indisponível")
+        val resposta = iaService.gerarResposta(prompt) ?: throw CreateInternalServerError("IA indisponível")
+
+        val respostaLimpa = extrairJson(resposta)
 
         val analise: AnaliseCurriculoDto = runCatching {
-            objectMapper.readValue(resposta, AnaliseCurriculoDto::class.java)
+            objectMapper.readValue(respostaLimpa, AnaliseCurriculoDto::class.java)
         }.getOrElse {
-            throw CreateInternalServerError("Erro ao interpretar resposta da IA: ${it.message}")
+            throw CreateInternalServerError("Erro ao interpretar JSON da IA: ${it.message}\nResposta: $resposta")
         }
 
         return AnaliseCurriculoResponseDto(analise)
@@ -126,5 +127,16 @@ class CurriculoServiceImpl(
         val texto = stripper.getText(document)
         document.close()
         return texto
+    }
+
+    private fun extrairJson(resposta: String): String {
+        val inicio = resposta.indexOf("{")
+        val fim = resposta.lastIndexOf("}")
+
+        if (inicio == -1 || fim == -1) {
+            throw CreateInternalServerError("Resposta da IA não contém JSON válido: $resposta")
+        }
+
+        return resposta.substring(inicio, fim + 1)
     }
 }
