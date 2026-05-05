@@ -19,5 +19,12 @@ spring:
     locations: classpath:db/migration
 
 jwt:
-  validity: 86400
+  # Tempo de vida do JWT em segundos (604800 = 7 dias).
+  validity: 604800
   secret: RXhpc3RlIHVtYSB0ZW9yaWEgcXVlIGRpeiBxdWUsIHNlIHVtIGRpYSBhbGd16W0gZGVzY29icmlyIGV4YX]
+
+# Ollama (opcional). Se não estiver rodando, /usuarios/recomendar usa a lista de vagas próximas sem LLM.
+ia:
+  ollama:
+    base-url: http://127.0.0.1:11434
+    model: llama3

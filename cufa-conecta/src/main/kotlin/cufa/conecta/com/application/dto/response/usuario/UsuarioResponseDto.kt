@@ -1,6 +1,7 @@
 package cufa.conecta.com.application.dto.response.usuario
 
 import cufa.conecta.com.model.data.result.UsuarioResult
+import java.time.LocalDate
 
 data class UsuarioResponseDto(
     val nome: String?,
@@ -8,6 +9,7 @@ data class UsuarioResponseDto(
     val cpf: String?,
     val telefone: String?,
     val escolaridade: String?,
+    val dtNascimento: LocalDate?,
     val idade: Int?,
     val estadoCivil: String?,
     val estado: String?,
@@ -22,6 +24,7 @@ data class UsuarioResponseDto(
             cpf = usuarioResult.cpf,
             telefone = usuarioResult.telefone,
             escolaridade = usuarioResult.escolaridade,
+            dtNascimento = usuarioResult.dtNascimento,
             idade = usuarioResult.idade,
             estadoCivil = usuarioResult.estadoCivil,
             estado = usuarioResult.estado,

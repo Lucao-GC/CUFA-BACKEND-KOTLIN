@@ -46,7 +46,7 @@ class UsuarioController(
         return UsuarioTokenDto(
             nome = usuarioToken.nome,
             email = usuarioToken.email,
-            tokenJwt = null
+            tokenJwt = token
         )
     }
 

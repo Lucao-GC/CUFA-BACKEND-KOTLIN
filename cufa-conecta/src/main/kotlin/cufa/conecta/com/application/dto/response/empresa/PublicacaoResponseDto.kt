@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 
 data class PublicacaoResponseDto(
     val publicacaoId: Long,
+    val empresaId: Long,
     val titulo: String,
     val descricao: String,
     val tipoContrato: String,
@@ -17,6 +18,7 @@ data class PublicacaoResponseDto(
             return listaDePublicacoes.map { data ->
                 PublicacaoResponseDto(
                     publicacaoId = data.publicacaoId!!,
+                    empresaId = data.empresaId!!,
                     nomeEmpresa = data.nomeEmpresa!!,
                     titulo = data.titulo!!,
                     descricao = data.descricao!!,

@@ -31,7 +31,7 @@ interface VagasDao : JpaRepository<ExperienciaEntity, Long> {
     WHERE p.dt_expiracao > NOW()
     AND e.latitude IS NOT NULL 
     AND e.longitude IS NOT NULL
-    HAVING distancia <= 10.1
+    HAVING distancia <= 50
     ORDER BY distancia ASC
     LIMIT 10
 """, nativeQuery = true)

@@ -19,8 +19,9 @@ class GerenciadorTokenJwt(){
     @Value("\${jwt.secret}")
     private lateinit var secret: String
 
+    /** Duração do token conforme `jwt.validity` no YAML, em segundos. */
     @Value("\${jwt.validity}")
-    private var jwtTokenValidity: Long = 0
+    private var jwtTokenValiditySeconds: Long = 0
 
     fun getUsernameFromToken(token: String) = getClaimFromToken(token) { it.subject }
 
@@ -29,7 +30,8 @@ class GerenciadorTokenJwt(){
     fun generateToken(authentication: Authentication): String {
         val now = Date()
 
-        val expiration = Date(now.time + jwtTokenValidity + 10000)
+        val validityMs = jwtTokenValiditySeconds * 1000
+        val expiration = Date(now.time + validityMs + 10_000)
 
         val authorities = authentication.authorities.joinToString(",") { it.authority }
 

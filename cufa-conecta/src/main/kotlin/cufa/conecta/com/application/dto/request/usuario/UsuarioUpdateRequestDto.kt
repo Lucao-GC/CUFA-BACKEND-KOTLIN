@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.br.CPF
 import java.time.LocalDate
 
 data class UsuarioUpdateRequestDto(
+    val nome: String? = null,
     @field:NotBlank(message = "O campo CPF não pode ser nulo, vazio ou branco")
     @field:Size(message = "O CPF deve conter 11 dígitos", min = 11, max = 14)
     @field:CPF(message = "CPF inválido")
@@ -30,6 +31,7 @@ data class UsuarioUpdateRequestDto(
     val biografia: String
 ) {
     fun toModel() = Usuario(
+        nome = nome,
         cpf = cpf,
         telefone = telefone,
         escolaridade = escolaridade,

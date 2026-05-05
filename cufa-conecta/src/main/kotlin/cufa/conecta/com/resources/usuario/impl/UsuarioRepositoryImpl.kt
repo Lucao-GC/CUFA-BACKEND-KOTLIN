@@ -193,6 +193,7 @@ class UsuarioRepositoryImpl(
                 cpf = usuarioEntity.cpf,
                 telefone = usuarioEntity.telefone,
                 escolaridade = usuarioEntity.escolaridade,
+                dtNascimento = dtNascUsuario,
                 idade = idade,
                 estadoCivil = usuarioEntity.estadoCivil,
                 estado = usuarioEntity.estado,

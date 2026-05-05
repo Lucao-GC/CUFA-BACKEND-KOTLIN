@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import cufa.conecta.com.application.dto.response.vagas.VagasRecomendadasResponseDto
 import cufa.conecta.com.application.dto.response.usuario.UsuarioTokenDto
 import cufa.conecta.com.application.dto.response.vagas.RecomendacaoDto
-import cufa.conecta.com.application.exception.CreateInternalServerError
+import cufa.conecta.com.application.dto.response.vagas.VagaProximaDto
 import cufa.conecta.com.domain.service.ai.IaGenerativaService
 import cufa.conecta.com.domain.service.usuario.UsuarioService
 import cufa.conecta.com.model.data.Login
@@ -22,6 +22,11 @@ class UsuarioServiceImpl(
     private val iaService: IaGenerativaService,
     private val objectMapper: ObjectMapper
 ): UsuarioService {
+
+    companion object {
+        /** Deve refletir o raio (km) usado em `VagasDao.buscarVagasProximas`. */
+        private const val RAIO_KM_RECOMENDACAO = 50
+    }
     override fun cadastrarUsuario(data: Usuario) = repository.cadastrarUsuario(data)
 
     override fun autenticar(data: Login): UsuarioTokenDto = repository.autenticar(data)
@@ -60,7 +65,14 @@ class UsuarioServiceImpl(
     override fun recomendarVagas(latitude: Double, longitude: Double): VagasRecomendadasResponseDto {
         val vagas = repository.buscarVagasProximas(latitude, longitude)
 
-        if (vagas.isEmpty()) throw CreateInternalServerError("Nenhuma vaga encontrada próxima às suas coordenadas")
+        // Resposta vazia (200): o app cai na listagem geral; 500 quebrava o fluxo e poluía o log.
+        if (vagas.isEmpty()) {
+            return VagasRecomendadasResponseDto(
+                recomendacoes = emptyList(),
+                totalVagas = 0,
+                raioKm = RAIO_KM_RECOMENDACAO
+            )
+        }
 
         val resumoVagas = vagas.joinToString("\n") {
             "ID=${it.publicacaoId}; TITULO=${it.titulo};" +
@@ -83,18 +95,29 @@ class UsuarioServiceImpl(
         """
 
         val respostaString = iaService.gerarResposta(prompt)
-            ?: throw CreateInternalServerError("Serviço de IA indisponível")
+        val recomendacoesIa: List<RecomendacaoDto>? = respostaString?.let { json ->
+            runCatching {
+                objectMapper.readValue(json, object : TypeReference<List<RecomendacaoDto>>() {})
+            }.getOrNull()
+        }
 
-        val recomendacoes: List<RecomendacaoDto> = runCatching {
-            objectMapper.readValue(
-                respostaString, object : TypeReference<List<RecomendacaoDto>>() {}
-            )
-        }.getOrElse { throw CreateInternalServerError("Erro ao processar resposta da IA: ${it.message}") }
+        val recomendacoes = recomendacoesIa ?: mapearVagasSemIa(vagas)
 
         return VagasRecomendadasResponseDto(
             recomendacoes = recomendacoes,
             totalVagas = vagas.size,
-            raioKm = 5
+            raioKm = RAIO_KM_RECOMENDACAO
         )
     }
+
+    private fun mapearVagasSemIa(vagas: List<VagaProximaDto>): List<RecomendacaoDto> =
+        vagas.map {
+            RecomendacaoDto(
+                id = it.publicacaoId,
+                nomeEmpresa = it.nomeEmpresa,
+                idEmpresa = it.empresaId,
+                titulo = it.titulo,
+                tipoContrato = it.tipoContrato
+            )
+        }
 }

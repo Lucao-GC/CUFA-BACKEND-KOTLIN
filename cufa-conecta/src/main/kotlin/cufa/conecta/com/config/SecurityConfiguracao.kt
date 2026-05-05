@@ -14,9 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
@@ -28,32 +28,6 @@ class SecurityConfiguracao(
     private val autenticacaoRepository: AutenticacaoRepository,
     private val autenticacaoEntryPoint: AutenticacaoEntryPoint
 ) {
-    companion object {
-        private val ALLOWED_URLS =
-            arrayOf(
-                AntPathRequestMatcher("/swagger-ui/**"),
-                AntPathRequestMatcher("/swagger-ui.html"),
-                AntPathRequestMatcher("/swagger-resources/**"),
-                AntPathRequestMatcher("/configuration/ui"),
-                AntPathRequestMatcher("/configuration/security"),
-                AntPathRequestMatcher("/public/**"),
-                AntPathRequestMatcher("/webjars/**"),
-                AntPathRequestMatcher("/v3-docs/**"),
-                AntPathRequestMatcher("/actuator/*"),
-                AntPathRequestMatcher("/users/**"),
-                AntPathRequestMatcher("/roles/**"),
-                AntPathRequestMatcher("/error/**"),
-                AntPathRequestMatcher("/actuator/**"),
-                AntPathRequestMatcher("/empresas/**"),
-                AntPathRequestMatcher("/funcionarios/**"),
-                AntPathRequestMatcher("/publicacoes/**"),
-                AntPathRequestMatcher("/curriculos/**"),
-                AntPathRequestMatcher("/candidaturas/**"),
-                AntPathRequestMatcher("/experiencias/**"),
-                AntPathRequestMatcher("/usuarios/**")
-            )
-    }
-
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
@@ -62,10 +36,39 @@ class SecurityConfiguracao(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                it.anyRequest().permitAll()
+                it.requestMatchers(
+                    "/swagger-ui/**",
+                    "/swagger-ui.html",
+                    "/swagger-resources/**",
+                    "/configuration/ui",
+                    "/configuration/security",
+                    "/webjars/**",
+                    "/v3-docs/**",
+                    "/v3/api-docs",
+                    "/v3/api-docs/**",
+                    "/public/**",
+                    "/error",
+                    "/error/**"
+                ).permitAll()
+                it.requestMatchers("/actuator/**").permitAll()
+                // Cadastro e login (usuário e empresa)
+                it.requestMatchers(HttpMethod.POST, "/usuarios").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/usuarios/login").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/usuarios/logout").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/empresas").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/empresas/login").permitAll()
+                it.requestMatchers(HttpMethod.POST, "/empresas/logout").permitAll()
+                // Listagem pública de vagas (somente GET na raiz; /publicacoes/empresa exige JWT de empresa)
+                it.requestMatchers(HttpMethod.GET, "/publicacoes").permitAll()
+                it.requestMatchers(HttpMethod.GET, "/empresas/all").permitAll()
+                it.anyRequest().authenticated()
             }
             .exceptionHandling {
                 it.authenticationEntryPoint(autenticacaoEntryPoint)
+                // Sem JWT (ou expirado), o contexto fica anônimo: Spring devolveria 403; APIs usam 401 para o app limpar sessão.
+                it.accessDeniedHandler { _, response, _ ->
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED)
+                }
             }
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -93,11 +96,22 @@ class SecurityConfiguracao(
     @Bean
     fun corsConfigurationSource(): CorsConfigurationSource {
         val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:5173") // frontend
-        configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+        // Antes só `localhost:5173` — Expo Web (8081), outras portas e IP da LAN geravam bloqueio no browser.
+        // `allowedOriginPatterns` aceita porta variável; `*` cobre origens não previstas em dev.
+        configuration.allowedOriginPatterns = listOf(
+            "http://localhost:*",
+            "http://127.0.0.1:*",
+            "http://[::1]:*",
+            "https://localhost:*",
+            "https://127.0.0.1:*",
+            "*"
+        )
+        configuration.allowedMethods = listOf("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD")
         configuration.allowedHeaders = listOf("*")
-        configuration.allowCredentials = true
-        configuration.exposedHeaders = listOf("Authorization", "Content-Disposition")
+        // Com `*` nas origens, credenciais não podem ser true (regra do CORS).
+        configuration.allowCredentials = false
+        configuration.exposedHeaders =
+            listOf("Authorization", "Content-Disposition", "Set-Cookie")
 
         val urlBasedCorsSource = UrlBasedCorsConfigurationSource()
         urlBasedCorsSource.registerCorsConfiguration("/**", configuration)

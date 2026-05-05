@@ -46,7 +46,7 @@ class EmpresaController(
         return EmpresaTokenDto(
             nome = empresaToken.nome,
             email = empresaToken.email,
-            tokenJwt = null
+            tokenJwt = token
         )
     }
 

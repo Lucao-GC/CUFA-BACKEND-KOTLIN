@@ -42,9 +42,13 @@ class PublicacaoRepositoryImpl(
     override fun buscarTodas(page: Int, size: Int): PublicacaoResult {
         val totalOfPublishes = dao.count()
 
-        val totalOfPages = ceil(totalOfPublishes.toDouble() / size).toInt()
+        val totalOfPages =
+            if (totalOfPublishes == 0L) 0 else ceil(totalOfPublishes.toDouble() / size).toInt()
 
-        if (page > totalOfPages && totalOfPublishes >= 0)
+        // Com zero publicações, totalOfPages = 0; ainda assim a página 1 deve retornar lista vazia.
+        if (totalOfPublishes > 0L && page > totalOfPages)
+            throw PageNotFoundException("A página $page não foi encontrada")
+        if (totalOfPublishes == 0L && page > 1)
             throw PageNotFoundException("A página $page não foi encontrada")
 
         val publicacoes = listarPublicacoes(page, size)
