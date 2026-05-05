@@ -1,5 +1,7 @@
 server:
   port: 8080
+  # Permite acesso pelo celular na mesma rede (Expo Go). Padrão do Spring já costuma ser todas as interfaces.
+  address: 0.0.0.0
 
 spring:
   jpa:
